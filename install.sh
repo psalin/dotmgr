@@ -8,7 +8,7 @@ packages=()
 packages_to_install=()
 
 
-function create_links_to_dotfiles() {
+function install_dotfiles() {
     local date_of_backup
     date_of_backup="$(date +%Y%m%d)"
     if [ -f "${HOME}/.bashrc" ]; then
@@ -20,6 +20,9 @@ function create_links_to_dotfiles() {
         mv "${HOME}/.vimrc" "${HOME}/.vimrc_${date_of_backup}.bak"
     fi
     ln -s "${DOTFILES_DIR}/.vimrc" "${HOME}/.vimrc"
+
+    dconf load /org/gnome/terminal/legacy/profiles:/ < \
+        "${DOTFILES_DIR}/.gnome-terminal-profile.dconf"
 }
 
 function check_and_install_packages() {
@@ -62,6 +65,6 @@ function install_vim_markdown() {
 }
 
 
-create_links_to_dotfiles
+install_dotfiles
 install_basic_packages
 install_vim_markdown
