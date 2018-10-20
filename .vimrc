@@ -58,7 +58,7 @@ highlight Search ctermbg=Red ctermfg=Yellow
 " Find dinamically as we type search term
 set incsearch
 
-" Ignore case when serching, unless a capital character is used
+" Ignore case when searching, unless a capital character is used
 set ignorecase
 set smartcase
 
