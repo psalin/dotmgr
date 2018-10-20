@@ -5,15 +5,21 @@ case $- in
 esac
 
 # Source bashrc configuration files
-bashrc_location=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+DOTFILES_DIR="${HOME}/.dotfiles"
+config_files=(
+    .aliases.sh
+    .environment.sh
+    .exports.sh
+    .functions.sh
+    .prompt.sh
+    .software-config.sh
+)
 
-for file in "${bashrc_location}/.bash/"*; do
-    source "${file}"
+for file in "${config_files[@]}"; do
+    source "${DOTFILES_DIR}/${file}"
 done
 
-# Source specific terminal configuration files (home, work...)
-specific_terminal_config_file="${HOME}/bin/specific-terminal-config"
-
-if [ -e ${specific_terminal_config_file} ]; then
-    source ${specific_terminal_config_file}
-fi
+# Load extra configuration
+for file in "${DOTFILES_DIR}/extra-config"; do
+    source "${file}"
+done

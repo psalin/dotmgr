@@ -1,7 +1,8 @@
 " Download vim-plug Plugin Manager if it is not in the system
+" This depends on: curl
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    \ https://raw.githubusercontent.com/jsanjoseg/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -9,9 +10,13 @@ endif
 " ========== vim-plug Plugin Manager ==========
 
 " vim-plug automatically executes
-"   - filetype plugin indent on
+"   - filetype plugin on
 "   - syntax enable
 
+" vim-instant-markdown dependencies:
+"   - apt-get install nodejs npm xdg-utils curl
+"   - npm -g install instant-markdown-d
+"
 call plug#begin('~/.vim/plugged')
 "Plug 'steffanc/cscopemaps.vim'
 Plug 'scrooloose/nerdtree'
@@ -21,6 +26,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'suan/vim-instant-markdown'
 Plug 'pearofducks/ansible-vim'
 Plug 'arcticicestudio/nord-vim'
+Plug 'mzlogin/vim-markdown-toc'
 call plug#end()
 
 
@@ -31,11 +37,11 @@ syntax on
 
 " Colorscheme for the syntax
 "   - ron works well with GNOME Terminal color profile Nord/Nord Solarized.
-"   - nord needs to be activated inside plugin section.
+"   - nord needs to be pluged inside plugin section.
 colorscheme ron
 
 " Column limit highlight
-set colorcolumn=80
+set colorcolumn=95
 highlight ColorColumn ctermbg=darkgray
 
 " Put color on trailing whitespaces and tabs
@@ -52,7 +58,7 @@ highlight Search ctermbg=Red ctermfg=Yellow
 " Find dinamically as we type search term
 set incsearch
 
-" Ignore case when seraching, unless a capital character is used
+" Ignore case when serching, unless a capital character is used
 set ignorecase
 set smartcase
 
@@ -61,6 +67,10 @@ set number
 
 " Show file name as window title
 set title
+
+" Set old window title to emtpy, so the text 'Thanks for flying vim' will
+" not be shown as the title of the terminal
+set titleold=
 
 " Uses 4 spaces (instead of tab) as indentation
 set expandtab
@@ -104,7 +114,7 @@ map <C-e> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = "+"
 let g:NERDTreeDirArrowCollapsible = "-"
 
-" (Not)Show hidden files
+" Not Show hidden files
 let NERDTreeShowHidden = 0
 
 "========== vim-gitgutter ==========
@@ -124,6 +134,14 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 " Disable folding
 "let g:vim_markdown_folding_disabled = 1
 
+"========== vim-markdown-toc ==========
+" Disable autoupdate of the Table Of Contents when saving
+let g:vmt_auto_update_on_save = 0
+
+" Do not insert a fence (it breaks the visualization with
+" InstantMarkdownPreview).
+" Without a fence, :UpdateToc will not work.
+let g:vmt_dont_insert_fence = 1
 
 "========== vim-instant-markdown ==========
 
@@ -132,6 +150,12 @@ let g:instant_markdown_autostart = 0
 
 
 "========== Key Remaps ==========
+
+" Move cursor in Insert mode
+inoremap <C-j> <down>
+inoremap <C-k> <up>
+inoremap <C-h> <left>
+inoremap <C-l> <right>
 
 " tabs shortcuts
 nnoremap th  :tabfirst<CR>
