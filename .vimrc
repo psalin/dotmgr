@@ -26,7 +26,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'suan/vim-instant-markdown'
 Plug 'pearofducks/ansible-vim'
 Plug 'arcticicestudio/nord-vim'
-Plug 'mzlogin/vim-markdown-toc'
 call plug#end()
 
 
