@@ -1,4 +1,4 @@
-# Dotfiles
+# Dotfiles and basic setup
 
 ## 1. Installation instructions
 - Clone this repository:
