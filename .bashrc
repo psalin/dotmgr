@@ -20,6 +20,6 @@ for file in "${config_files[@]}"; do
 done
 
 # Load extra configuration
-for file in "${DOTFILES_DIR}/extra-config"; do
+for file in "${DOTFILES_DIR}/extra-config/"*; do
     source "${file}"
 done
