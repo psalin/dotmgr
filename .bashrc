@@ -5,7 +5,7 @@ case $- in
 esac
 
 # Source bashrc configuration files
-DOTFILES_DIR="${HOME}/.dotfiles"
+dotfiles_dir="${HOME}/.dotfiles"
 config_files=(
     .aliases.sh
     .environment.sh
@@ -16,10 +16,13 @@ config_files=(
 )
 
 for file in "${config_files[@]}"; do
-    source "${DOTFILES_DIR}/${file}"
+    source "${dotfiles_dir}/${file}"
 done
 
 # Load extra configuration
-for file in "${DOTFILES_DIR}/extra-config/"*; do
-    source "${file}"
-done
+extraconfig_dir="${dotfiles_dir}/extra-config"
+if [ "$(ls "${extraconfig_dir}")" ]; then
+    for file in "${extraconfig_dir}"/*; do
+        source "${file}"
+    done
+fi
