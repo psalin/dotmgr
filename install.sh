@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TODO:
+#   - dry run option
+#   - help
+
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
