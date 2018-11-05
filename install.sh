@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dotfiles_dir="${HOME}/.dotfiles"
+dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
