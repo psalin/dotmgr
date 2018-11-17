@@ -2,7 +2,7 @@
 
 # TODO:
 #   - dry run option
-#   - help
+#   - backup dconf configuration for profile
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 dotfiles=(
@@ -13,35 +13,10 @@ packages=()
 packages_to_install=()
 
 install_with_parameters=false
-parameter_dotfile=false
 parameter_basic_packages=false
 parameter_vim_markdown=false
 update_package_index=true
 
-if [ ${#} -ne 0 ]; then
-    install_with_parameters=true
-fi
-
-while (( "$#" )); do
-    case "$1" in
-        --basic-packages)
-            parameter_basic_packages=true
-            shift
-            ;;
-        --vim-markdown)
-            parameter_vim_markdown=true
-            shift
-            ;;
-        --help)
-            echo "TODO: show help"
-            exit 0
-            ;;
-        *)
-            echo "Error: Unsupported parameter $1" >&2
-            exit 1
-            ;;
-    esac
-done
 
 function install_dotfiles() {
     local origin_file
@@ -68,7 +43,7 @@ function install_dotfiles() {
         ln -s "${origin_file}" "${destination_file}"
     done
 
-    if [ -x "$(command -v $1)" ]; then
+    if [ -x "$(command -v dconf)" ]; then
         echo -e "\tgnome-terminal profiles"
         dconf load /org/gnome/terminal/legacy/profiles:/ < \
             "${dotfiles_dir}/.gnome-terminal-profile.dconf"
@@ -122,8 +97,50 @@ function install_vim_markdown() {
     sudo npm -g install instant-markdown-d
 }
 
+function show_help() {
+    cat <<EOF
+Usage: install.sh [OPTION]
+
+Install dotfiles for the user.
+If no argument is indicated, the script will perform only the copy
+of the dotfiles.
+
+List of arguments:
+  --basic-packages          a list of basic packages (internally harcoded)
+                              will be installed.
+  --vim-markdown            vim-markdown plugin will be installed in vim.
+  --help                    show this help.
+EOF
+
+}
+
 
 echo "dotfiles and post-installation script"
+
+if [ ${#} -ne 0 ]; then
+    install_with_parameters=true
+fi
+
+while (( "$#" )); do
+    case "$1" in
+        --basic-packages)
+            parameter_basic_packages=true
+            shift
+            ;;
+        --vim-markdown)
+            parameter_vim_markdown=true
+            shift
+            ;;
+        --help)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo "Error: Unsupported parameter $1" >&2
+            exit 1
+            ;;
+    esac
+done
 
 install_dotfiles
 
