@@ -24,10 +24,6 @@ fi
 
 while (( "$#" )); do
     case "$1" in
-        --dotfiles)
-            parameter_dotfile=true
-            shift
-            ;;
         --basic-packages)
             parameter_basic_packages=true
             shift
@@ -129,11 +125,9 @@ function install_vim_markdown() {
 
 echo "dotfiles and post-installation script"
 
-if [ ${install_with_parameters} = true ]; then
-    if [ "${parameter_dotfile}" = true ]; then
-        install_dotfiles
-    fi
+install_dotfiles
 
+if [ ${install_with_parameters} = true ]; then
     if [ "${parameter_basic_packages}" = true ]; then
         install_basic_packages
     fi
@@ -141,8 +135,4 @@ if [ ${install_with_parameters} = true ]; then
     if [ "${parameter_vim_markdown}" = true ]; then
         install_vim_markdown
     fi
-else
-    install_dotfiles
-    install_basic_packages
-    install_vim_markdown
 fi
