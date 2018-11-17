@@ -5,6 +5,9 @@
 #   - backup dconf configuration for profile
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+
+# dotfiles array keeps the list of dotfiles with the next format:
+#   "origin_dotfile destionation_of_dotfile"
 dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
@@ -12,10 +15,11 @@ dotfiles=(
 packages=()
 packages_to_install=()
 
+# argument-related variables
 install_with_parameters=false
 parameter_basic_packages=false
 parameter_vim_markdown=false
-update_package_index=true
+parameter_no_source=false
 
 
 function install_dotfiles() {
@@ -61,11 +65,8 @@ function check_and_install_packages() {
     done
 
     if [ ${#packages_to_install[@]} -ne 0 ]; then
-    echo
-        if [ "${update_package_index}" = true ]; then
-            update_package_index=false
-            sudo apt-get update
-        fi
+        echo
+        sudo apt-get update
         sudo apt-get install -y "${packages_to_install[@]}"
     fi
 }
@@ -109,13 +110,11 @@ List of arguments:
   --basic-packages          a list of basic packages (internally harcoded)
                               will be installed.
   --vim-markdown            vim-markdown plugin will be installed in vim.
+  --no-source               do not source .bashrc file after the installation.
   --help                    show this help.
 EOF
-
 }
 
-
-echo "dotfiles and post-installation script"
 
 if [ ${#} -ne 0 ]; then
     install_with_parameters=true
@@ -131,6 +130,10 @@ while (( "$#" )); do
             parameter_vim_markdown=true
             shift
             ;;
+        --no-source)
+            parameter_no_source=true
+            shift
+            ;;
         --help)
             show_help
             exit 0
@@ -141,6 +144,8 @@ while (( "$#" )); do
             ;;
     esac
 done
+
+echo "dotfiles and post-installation script"
 
 install_dotfiles
 
@@ -153,3 +158,12 @@ if [ ${install_with_parameters} = true ]; then
         install_vim_markdown
     fi
 fi
+
+if [ "${parameter_no_source}" = false ]; then
+    bashrc_file=$(echo "${dotfiles[@]}" | grep "bashrc" | cut -d " " -f2)
+    echo
+    echo Sourcing new .bashrc...
+    source ${bashrc_file}
+fi
+echo
+echo DONE
