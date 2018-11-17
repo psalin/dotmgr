@@ -72,9 +72,11 @@ function install_dotfiles() {
         ln -s "${origin_file}" "${destination_file}"
     done
 
-    echo -e "\tgnome-terminal profiles"
-    dconf load /org/gnome/terminal/legacy/profiles:/ < \
-        "${dotfiles_dir}/.gnome-terminal-profile.dconf"
+    if [ -x "$(command -v $1)" ]; then
+        echo -e "\tgnome-terminal profiles"
+        dconf load /org/gnome/terminal/legacy/profiles:/ < \
+            "${dotfiles_dir}/.gnome-terminal-profile.dconf"
+    fi
 }
 
 function check_and_install_packages() {
