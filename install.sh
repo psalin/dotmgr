@@ -114,7 +114,7 @@ List of arguments:
                               will be installed.
   --vim-markdown            vim-markdown plugin will be installed in vim.
   --no-source               do not source .bashrc file after the installation.
-  --help                    show this help.
+  -h, --help                show this help.
 EOF
 }
 
@@ -137,7 +137,7 @@ while (( "$#" )); do
             parameter_no_source=true
             shift
             ;;
-        --help)
+        --help | -h)
             show_help
             exit 0
             ;;
