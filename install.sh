@@ -49,6 +49,9 @@ function install_dotfiles() {
 
     if [ -x "$(command -v dconf)" ]; then
         echo -e "\tgnome-terminal profiles"
+        echo -e "\tCreating backup of current profiles"
+        dconf dump /org/gnome/terminal/legacy/profiles:/ > \
+            "${HOME}/.gnome-terminal-profile.dconf.bak"
         dconf load /org/gnome/terminal/legacy/profiles:/ < \
             "${dotfiles_dir}/.gnome-terminal-profile.dconf"
     fi
