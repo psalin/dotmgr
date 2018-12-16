@@ -2,8 +2,6 @@
 
 # TODO:
 #   - dry run option
-#   - backup dconf configuration for profile
-#   - Installation of vim plugins depending on flags
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
