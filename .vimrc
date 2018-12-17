@@ -129,26 +129,6 @@ noremap <silent> <C-k> :call smooth_scroll#up(&scroll, 15, 2)<CR>
 noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 
 
-"========== markdown-syntax ==========
-
-" Disable folding
-"let g:vim_markdown_folding_disabled = 1
-
-"========== vim-markdown-toc ==========
-" Disable autoupdate of the Table Of Contents when saving
-let g:vmt_auto_update_on_save = 0
-
-" Do not insert a fence (it breaks the visualization with
-" InstantMarkdownPreview).
-" Without a fence, :UpdateToc will not work.
-let g:vmt_dont_insert_fence = 1
-
-"========== vim-instant-markdown ==========
-
-" Disable autostart (:InstantMarkdownPreview to show the file)
-let g:instant_markdown_autostart = 0
-
-
 "========== Key Remaps ==========
 
 " Move cursor in Insert mode
