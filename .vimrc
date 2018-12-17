@@ -26,11 +26,13 @@ Plug 'vim-airline/vim-airline'
 Plug 'suan/vim-instant-markdown'
 Plug 'pearofducks/ansible-vim'
 Plug 'arcticicestudio/nord-vim'
+Plug 'Valloric/YouCompleteMe'
+Plug 'tpope/vim-fugitive'
+Plug 'ctrlpvim/ctrlp.vim'
 call plug#end()
 
 
 "========== General ==========
-
 " Syntax color
 syntax on
 
