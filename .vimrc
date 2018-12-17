@@ -18,7 +18,6 @@ endif
 "   - npm -g install instant-markdown-d
 "
 call plug#begin('~/.vim/plugged')
-"Plug 'steffanc/cscopemaps.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-smooth-scroll'
