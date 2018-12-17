@@ -6,7 +6,8 @@
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
 # dotfiles array keeps the list of dotfiles with the next format:
-#   "origin_dotfile destionation_of_dotfile"
+#   "origin_dotfile destination_of_dotfile"
+# The file will not be copied if it does not exist.
 dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
@@ -36,7 +37,12 @@ function install_dotfiles() {
         origin_file=$(echo "${dotfiles[$i]}" | cut -d " " -f1)
         destination_file=$(echo "${dotfiles[$i]}" | cut -d " " -f2)
 
-        echo -e "\t${destination_file}"
+        if [ ! -f "${origin_file}" ]; then
+            echo -e "\t${origin_file} not found. Skipping..."
+            continue
+        fi
+
+        echo -e "\t${origin_file} -> ${destination_file}"
 
         if [ -f "${destination_file}" ]; then
             if [ ! -h "${destination_file}" ]; then
