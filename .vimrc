@@ -128,14 +128,25 @@ let NERDTreeShowHidden = 0
 noremap <silent> <C-k> :call smooth_scroll#up(&scroll, 15, 2)<CR>
 noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 
+"========== YouCompleteMe ===========
+
+" Scroll without auto-insertion using Up/Down (intro to select)
+" Scroll with auto-insertion using C-p/C-u (C-x to select)
+let g:ycm_key_list_select_completion = ['']
+let g:ycm_key_list_previous_completion = ['']
+
 
 "========== Key Remaps ==========
 
 " Move cursor in Insert mode
+" (This will not work if YCM window is open)
 inoremap <C-j> <down>
 inoremap <C-k> <up>
 inoremap <C-h> <left>
 inoremap <C-l> <right>
+
+" Esc remap
+inoremap <C-c> <Esc>
 
 " tabs shortcuts
 nnoremap th  :tabfirst<CR>
