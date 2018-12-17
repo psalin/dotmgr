@@ -2,7 +2,6 @@
 
 # TODO:
 #   - dry run option
-#   - allow list of packages to be installed as a parameter
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
@@ -89,7 +88,9 @@ of the dotfiles.
 
 List of arguments:
   --basic-packages          a list of basic packages (internally harcoded)
-                              will be installed.
+                             will be installed.
+  --packages "package ..."  provide a list of packages that will be installed
+                             in adition to the basic packages
   --no-source               do not source .bashrc file after the installation.
   -h, --help                show this help.
 EOF
@@ -105,6 +106,10 @@ while (( "$#" )); do
         --basic-packages)
             parameter_basic_packages=true
             shift
+            ;;
+        --packages)
+            basic_packages+=($2)
+            shift 2
             ;;
         --no-source)
             parameter_no_source=true
