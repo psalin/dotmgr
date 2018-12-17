@@ -17,6 +17,9 @@ basic_packages=(
     curl
     shellcheck
     flake8
+    build-essential
+    cmake
+    python2.7-dev
 )
 
 # argument-related variables
