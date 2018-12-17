@@ -2,6 +2,7 @@
 
 # TODO:
 #   - dry run option
+#   - allow list of packages to be installed as a parameter
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
@@ -11,8 +12,12 @@ dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
 )
-packages=()
-packages_to_install=()
+basic_packages=(
+    git
+    curl
+    shellcheck
+    flake8
+)
 
 # argument-related variables
 install_with_parameters=false
@@ -56,9 +61,11 @@ function install_dotfiles() {
 }
 
 function check_and_install_packages() {
+    local packages=("$@")
+    local packages_to_install=()
     for package in "${packages[@]}"; do
         if ! dpkg -l | grep ^ii | awk '{print $2}' | grep -Eq "^${package}$"; then
-            packages_to_install+=(${package})
+            packages_to_install+=("${package}")
             echo -e "\t${package}: NOT INSTALLED"
         else
             echo -e "\t${package}: OK"
@@ -70,19 +77,6 @@ function check_and_install_packages() {
         sudo apt-get update
         sudo apt-get install -y "${packages_to_install[@]}"
     fi
-}
-
-function install_basic_packages() {
-    packages=(
-        git
-        curl
-        shellcheck
-        flake8
-    )
-
-    echo
-    echo "Installing basic packages..."
-    check_and_install_packages
 }
 
 function show_help() {
@@ -133,7 +127,9 @@ install_dotfiles
 
 if [ ${install_with_parameters} = true ]; then
     if [ "${parameter_basic_packages}" = true ]; then
-        install_basic_packages
+        echo
+        echo "Installing basic packages..."
+        check_and_install_packages "${basic_packages[@]}"
     fi
 fi
 
