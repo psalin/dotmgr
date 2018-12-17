@@ -17,7 +17,6 @@ packages_to_install=()
 # argument-related variables
 install_with_parameters=false
 parameter_basic_packages=false
-parameter_vim_markdown=false
 parameter_no_source=false
 
 
@@ -86,20 +85,6 @@ function install_basic_packages() {
     check_and_install_packages
 }
 
-function install_vim_markdown() {
-    packages=(
-        nodejs
-        npm
-        xdg-utils
-        curl
-    )
-
-    echo
-    echo "Installing vim plugin dependencies..."
-    check_and_install_packages
-    sudo npm -g install instant-markdown-d
-}
-
 function show_help() {
     cat <<EOF
 Usage: install.sh [OPTION]
@@ -111,7 +96,6 @@ of the dotfiles.
 List of arguments:
   --basic-packages          a list of basic packages (internally harcoded)
                               will be installed.
-  --vim-markdown            vim-markdown plugin will be installed in vim.
   --no-source               do not source .bashrc file after the installation.
   -h, --help                show this help.
 EOF
@@ -126,10 +110,6 @@ while (( "$#" )); do
     case "$1" in
         --basic-packages)
             parameter_basic_packages=true
-            shift
-            ;;
-        --vim-markdown)
-            parameter_vim_markdown=true
             shift
             ;;
         --no-source)
@@ -154,10 +134,6 @@ install_dotfiles
 if [ ${install_with_parameters} = true ]; then
     if [ "${parameter_basic_packages}" = true ]; then
         install_basic_packages
-    fi
-
-    if [ "${parameter_vim_markdown}" = true ]; then
-        install_vim_markdown
     fi
 fi
 
