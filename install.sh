@@ -1,7 +1,12 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # TODO:
 #   - dry run option
+
+# This script assumes the use of vim-plug as vim plugin manager, with default
+# paths for files i.e. ~/.vim/plugged/
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
@@ -23,9 +28,9 @@ basic_packages=(
 )
 
 # argument-related variables
-install_with_parameters=false
 parameter_basic_packages=false
 parameter_no_source=false
+parameter_vim_plugins=false
 
 
 function install_dotfiles() {
@@ -100,15 +105,12 @@ List of arguments:
                              will be installed.
   --packages "package ..."  provide a list of packages that will be installed
                              in adition to the basic packages
+  --vim-plugins             vim plugin installation
   --no-source               do not source .bashrc file after the installation.
   -h, --help                show this help.
 EOF
 }
 
-
-if [ ${#} -ne 0 ]; then
-    install_with_parameters=true
-fi
 
 while (( "$#" )); do
     case "$1" in
@@ -122,6 +124,10 @@ while (( "$#" )); do
             ;;
         --no-source)
             parameter_no_source=true
+            shift
+            ;;
+        --vim-plugins)
+            parameter_vim_plugins=true
             shift
             ;;
         --help | -h)
@@ -139,19 +145,38 @@ echo "dotfiles and post-installation script"
 
 install_dotfiles
 
-if [ ${install_with_parameters} = true ]; then
-    if [ "${parameter_basic_packages}" = true ]; then
-        echo
-        echo "Installing basic packages..."
-        check_and_install_packages "${basic_packages[@]}"
+if [ "${parameter_basic_packages}" = true ]; then
+    echo
+    echo "Installing basic packages..."
+    check_and_install_packages "${basic_packages[@]}"
+fi
+
+if [ "${parameter_vim_plugins}" = true ]; then
+    echo
+    echo "Installing vim plugins"
+    if [ ! -f "${HOME}/.vim/autoload/plug.vim" ]; then
+        # If vim-plug does not exist, .vimrc will install it automatically.
+        # It also contains commands to exit from vim, so we don't need q command
+        # here.
+        vim
+    else
+        vim -c 'PlugUpdate' -c 'q!' -c 'q!'
+    fi
+
+    # If we have YouCompleteMe plugin in vim, the plugin will be installed
+    # automatically, but we still need to compile the core
+    if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc")" ]; then
+        ${HOME}/.vim/plugged/YouCompleteMe/install.py
     fi
 fi
 
 if [ "${parameter_no_source}" = false ]; then
+    #Not valid, check how to get field from array
     bashrc_file=$(echo "${dotfiles[@]}" | grep "bashrc" | cut -d " " -f2)
     echo
     echo Sourcing new .bashrc...
     source ${bashrc_file}
 fi
+
 echo
 echo DONE
