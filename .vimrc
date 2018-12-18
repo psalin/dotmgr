@@ -134,7 +134,10 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 " Scroll with auto-insertion using C-p/C-u (C-x to select)
 let g:ycm_key_list_select_completion = ['']
 let g:ycm_key_list_previous_completion = ['']
-
+"To try
+"let g:ycm_key_list_select_completion = ['<TAB>']
+"let g:ycm_key_list_previous_completion = ['<S-TAB>']
+"let g:ycm_key_list_stop_completion = ['<C-y>', '<UP>', '<DOWN>']
 
 "========== Key Remaps ==========
 
