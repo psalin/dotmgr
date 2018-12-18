@@ -138,6 +138,7 @@ let g:ycm_key_list_previous_completion = ['']
 "let g:ycm_key_list_select_completion = ['<TAB>']
 "let g:ycm_key_list_previous_completion = ['<S-TAB>']
 "let g:ycm_key_list_stop_completion = ['<C-y>', '<UP>', '<DOWN>']
+"let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
 
 "========== Key Remaps ==========
 
