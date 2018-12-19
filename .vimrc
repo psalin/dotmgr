@@ -116,6 +116,9 @@ let g:NERDTreeDirArrowCollapsible = "-"
 " Not Show hidden files
 let NERDTreeShowHidden = 0
 
+" Close vim automatically if NERDTree is the last window/tab
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 "========== vim-gitgutter ==========
 
 " Faster updates (strange behavior)
