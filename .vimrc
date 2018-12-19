@@ -179,6 +179,8 @@ inoremap <C-h> <left>
 inoremap <C-l> <right>
 
 " Esc remap
+" Ctrl-C does not trigger InsertLeave autocmd. We need to remap Ctrl-C to Esc
+" to have the same behavior
 inoremap <C-c> <Esc>
 
 " tabs shortcuts
