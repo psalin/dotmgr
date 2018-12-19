@@ -31,6 +31,33 @@ call plug#end()
 
 
 "========== General ==========
+"Remap caps lock to Control
+"- deactive caps lock when entering vim
+"- map caps lock to control
+"- remap when exiting vim
+"https://vi.stackexchange.com/questions/376/can-vim-automatically-turn-off-capslock-when-returning-to-normal-mode
+"xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+"- does that works wiuthout X?
+"
+"
+"au VimEnter * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+"au VimLeave * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
+"
+"
+"This requires xorg-xmodmap
+"
+"http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_XWindows
+"
+"https://www.emacswiki.org/emacs/MovingTheCtrlKey
+"
+"https://askubuntu.com/questions/445099/whats-the-opposite-of-setxkbmap-option-ctrlnocaps
+"
+"setxkbmap -option ctrl:nocaps       # Make Caps Lock a Control key
+"setxkbmap -option          # To remove the mapping
+"
+" How to turn off caps lock before doing that thingie
+"
+"
 " Syntax color
 syntax on
 
