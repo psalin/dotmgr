@@ -92,6 +92,20 @@ function check_and_install_packages() {
     fi
 }
 
+function install_vim_markdown() {
+    local vim_packages=(
+        nodejs
+        npm
+        xdg-utils
+        curl
+        )
+
+    echo
+    echo "Installing vim plugin dependencies..."
+    check_and_install_packages "${vim_packages[@]}"
+    sudo npm -g install instant-markdown-d
+}
+
 function show_help() {
     cat <<EOF
 Usage: install.sh [OPTION]
@@ -168,6 +182,8 @@ if [ "${parameter_vim_plugins}" = true ]; then
     if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc")" ]; then
         ${HOME}/.vim/plugged/YouCompleteMe/install.py
     fi
+
+    install_vim_markdown
 fi
 
 if [ "${parameter_no_source}" = false ]; then

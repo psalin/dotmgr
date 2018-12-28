@@ -27,6 +27,7 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'Valloric/YouCompleteMe'
 Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'suan/vim-instant-markdown'
 call plug#end()
 
 
@@ -142,6 +143,12 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 "let g:ycm_key_list_previous_completion = ['<S-TAB>']
 "let g:ycm_key_list_stop_completion = ['<C-y>', '<UP>', '<DOWN>']
 "let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
+"
+"
+"========== vim-instant-markdown =========
+" Disable autostart (:InstantMarkdownPreview to show the file)
+let g:instant_markdown_autostart = 0
+
 
 "========== Key Remaps ==========
 "
