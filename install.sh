@@ -125,6 +125,10 @@ List of arguments:
 EOF
 }
 
+if [ "$#" == 0 ]; then
+    show_help
+    exit 0
+fi
 
 while (( "$#" )); do
     case "$1" in
