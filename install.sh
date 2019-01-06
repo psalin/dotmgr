@@ -169,21 +169,20 @@ if [ "${parameter_vim_plugins}" = true ]; then
     echo
     echo "Installing vim plugins"
     if [ ! -f "${HOME}/.vim/autoload/plug.vim" ]; then
-        # If vim-plug does not exist, .vimrc will install it automatically.
-        # It also contains commands to exit from vim, so we don't need q command
-        # here.
-        vim
-    else
-        vim -c 'PlugUpdate' -c 'q!' -c 'q!'
+        # Download vim-plug Plugin Manager if it is not in the system
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     fi
+
+    vim -c 'PlugUpdate' -c 'q!' -c 'q!'
 
     # If we have YouCompleteMe plugin in vim, the plugin will be installed
     # automatically, but we still need to compile the core
-    if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc")" ]; then
-        ${HOME}/.vim/plugged/YouCompleteMe/install.py
-    fi
+#    if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc")" ]; then
+#        ${HOME}/.vim/plugged/YouCompleteMe/install.py
+#    fi
 
-    install_vim_markdown
+#    install_vim_markdown
 fi
 
 if [ "${parameter_no_source}" = false ]; then

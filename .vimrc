@@ -1,35 +1,6 @@
-" Download vim-plug Plugin Manager if it is not in the system
-" This depends on: curl
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugUpdate --sync | source $MYVIMRC | q | q
+if ! empty(glob('~/.vim/autoload/plug.vim'))
+    source ~/.dotfiles/.vimrc.plugins
 endif
-
-
-" ========== vim-plug Plugin Manager ==========
-
-" vim-plug automatically executes
-"   - filetype plugin on
-"   - syntax enable
-
-" vim-instant-markdown dependencies:
-"   - apt-get install nodejs npm xdg-utils curl
-"   - npm -g install instant-markdown-d
-"
-call plug#begin('~/.vim/plugged')
-Plug 'scrooloose/nerdtree'
-Plug 'airblade/vim-gitgutter'
-Plug 'terryma/vim-smooth-scroll'
-Plug 'vim-airline/vim-airline'
-Plug 'pearofducks/ansible-vim'
-Plug 'arcticicestudio/nord-vim'
-Plug 'Valloric/YouCompleteMe'
-Plug 'tpope/vim-fugitive'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'suan/vim-instant-markdown'
-call plug#end()
-
 
 "========== General ==========
 "
@@ -95,59 +66,6 @@ autocmd BufRead,BufNewFile *.md set filetype=markdown
 if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
-
-
-"========== vim-airline ==========
-
-" Use colorscheme nord
-let g:airline_theme='nord'
-
-" Enable tabline to show the tabs at the top of the window
-let g:airline#extensions#tabline#enabled = 1
-
-
-"========== NERDTree ==========
-
-" Open/Close NERDTree
-map <C-e> :NERDTreeToggle<CR>
-
-" Change arrows to show expandable/collapsible elements
-let g:NERDTreeDirArrowExpandable = "+"
-let g:NERDTreeDirArrowCollapsible = "-"
-
-" Not Show hidden files
-let NERDTreeShowHidden = 0
-
-" Close vim automatically if NERDTree is the last window/tab
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-"========== vim-gitgutter ==========
-
-" Faster updates (strange behavior)
-"set updatetime=250
-
-
-"========== vim-smooth-scroll ===========
-
-noremap <silent> <C-k> :call smooth_scroll#up(&scroll, 15, 2)<CR>
-noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
-
-"========== YouCompleteMe ===========
-
-" Scroll without auto-insertion using Up/Down (intro to select)
-" Scroll with auto-insertion using C-p/C-u (C-x to select)
-"let g:ycm_key_list_select_completion = ['']
-"let g:ycm_key_list_previous_completion = ['']
-"To try
-"let g:ycm_key_list_select_completion = ['<TAB>']
-"let g:ycm_key_list_previous_completion = ['<S-TAB>']
-"let g:ycm_key_list_stop_completion = ['<C-y>', '<UP>', '<DOWN>']
-"let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
-"
-"
-"========== vim-instant-markdown =========
-" Disable autostart (:InstantMarkdownPreview to show the file)
-let g:instant_markdown_autostart = 0
 
 
 "========== Key Remaps ==========
