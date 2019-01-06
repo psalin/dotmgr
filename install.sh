@@ -16,6 +16,7 @@ dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
+    "${dotfiles_dir}/.vimrc.plugins ${HOME}/.vimrc.plugins"
 )
 basic_packages=(
     git
@@ -28,6 +29,7 @@ basic_packages=(
 )
 
 # argument-related variables
+parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_no_source=false
 parameter_vim_plugins=false
@@ -108,13 +110,13 @@ function install_vim_markdown() {
 
 function show_help() {
     cat <<EOF
-Usage: install.sh [OPTION]
+Usage: install.sh OPTION1 OPTION2 ...
 
 Install dotfiles for the user.
-If no argument is indicated, the script will perform only the copy
-of the dotfiles.
+If no argument is indicated, the script will not perform any action.
 
 List of arguments:
+  --dotfiles                dotfiles will be installed
   --basic-packages          a list of basic packages (internally harcoded)
                              will be installed.
   --packages "package ..."  provide a list of packages that will be installed
@@ -128,6 +130,10 @@ EOF
 
 while (( "$#" )); do
     case "$1" in
+        --dotfiles)
+            parameter_dotfiles=true
+            shift
+            ;;
         --basic-packages)
             parameter_basic_packages=true
             shift
@@ -157,7 +163,11 @@ done
 
 echo "dotfiles and post-installation script"
 
-install_dotfiles
+if [ "${parameter_dotfiles}" = true ]; then
+    echo
+    echo "Installing dotfiles..."
+    install_dotfiles
+fi
 
 if [ "${parameter_basic_packages}" = true ]; then
     echo
@@ -169,20 +179,31 @@ if [ "${parameter_vim_plugins}" = true ]; then
     echo
     echo "Installing vim plugins"
     if [ ! -f "${HOME}/.vim/autoload/plug.vim" ]; then
+        echo "    vim-plug Plugin Manager: NOT INSTALLED"
+
         # Download vim-plug Plugin Manager if it is not in the system
         curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
             https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    else
+        echo "    vim-plug Plugin Manager: INSTALLED"
     fi
 
     vim -c 'PlugUpdate' -c 'q!' -c 'q!'
+    echo "    Plugins updated"
 
     # If we have YouCompleteMe plugin in vim, the plugin will be installed
     # automatically, but we still need to compile the core
-#    if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc")" ]; then
-#        ${HOME}/.vim/plugged/YouCompleteMe/install.py
-#    fi
+    if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc.plugins")" ]; then
+        ${HOME}/.vim/plugged/YouCompleteMe/install.py
+    else
+        echo "    YouCompleteMe plugin not found in plugin configuration"
+    fi
 
-#    install_vim_markdown
+    if [ "$(grep -E "^\s*Plug .*vim-instant-markdown.*$" "${HOME}/.vimrc.plugins")" ]; then
+        install_vim_markdown
+    else
+        echo "    vim-instant-markdown plugin not found in plugin configuration"
+    fi
 fi
 
 if [ "${parameter_no_source}" = false ]; then
