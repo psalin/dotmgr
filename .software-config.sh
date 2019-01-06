@@ -1,6 +1,11 @@
-# Ansible cow selection (default: cow)
+# Ansible: random cow (default: cow)
 #export ANSIBLE_COW_SELECTION=random
+
+# Ansible: no cows
 export ANSIBLE_NOCOWS=1
 
-# Improve Ansible output
+# Ansible: improve output
 export ANSIBLE_STDOUT_CALLBACK=yaml
+
+# kubectl: add autocompletion
+source <(kubectl completion bash)
