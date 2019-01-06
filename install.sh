@@ -31,7 +31,6 @@ basic_packages=(
 # argument-related variables
 parameter_dotfiles=false
 parameter_basic_packages=false
-parameter_no_source=false
 parameter_vim_plugins=false
 
 
@@ -122,7 +121,6 @@ List of arguments:
   --packages "package ..."  provide a list of packages that will be installed
                              in adition to the basic packages
   --vim-plugins             vim plugin installation
-  --no-source               do not source .bashrc file after the installation.
   -h, --help                show this help.
 EOF
 }
@@ -141,10 +139,6 @@ while (( "$#" )); do
         --packages)
             basic_packages+=($2)
             shift 2
-            ;;
-        --no-source)
-            parameter_no_source=true
-            shift
             ;;
         --vim-plugins)
             parameter_vim_plugins=true
@@ -204,14 +198,6 @@ if [ "${parameter_vim_plugins}" = true ]; then
     else
         echo "    vim-instant-markdown plugin not found in plugin configuration"
     fi
-fi
-
-if [ "${parameter_no_source}" = false ]; then
-    #Not valid, check how to get field from array
-    bashrc_file=$(echo "${dotfiles[@]}" | grep "bashrc" | cut -d " " -f2)
-    echo
-    echo Sourcing new .bashrc...
-    source ${bashrc_file}
 fi
 
 echo
