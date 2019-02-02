@@ -77,7 +77,7 @@ function check_and_install_packages() {
     local packages=("$@")
     local packages_to_install=()
     for package in "${packages[@]}"; do
-        if ! dpkg -l | grep ^ii | awk '{print $2}' | grep -Eq "^${package}$"; then
+        if ! dpkg -l | grep -E "^ii\s+${package}" &> /dev/null; then
             packages_to_install+=("${package}")
             echo -e "\t${package}: NOT INSTALLED"
         else
