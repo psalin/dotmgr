@@ -1,2 +1,5 @@
 [core]
-	editor = vim
+    editor = vim
+
+[alias]
+    lol = log --oneline --graph --decorate
