@@ -17,6 +17,9 @@ dotfiles=(
     "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
     "${dotfiles_dir}/.vimrc.plugins ${HOME}/.vimrc.plugins"
+    "${dotfiles_dir}/.gitconfig ${HOME}/.gitconfig"
+
+
 )
 basic_packages=(
     git
