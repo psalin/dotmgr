@@ -22,6 +22,7 @@ dotfiles=(
 
 )
 basic_packages=(
+    vim
     git
     curl
     shellcheck
