@@ -80,7 +80,7 @@ function check_and_install_packages() {
     local packages=("$@")
     local packages_to_install=()
     for package in "${packages[@]}"; do
-        if ! dpkg -l | grep -E "^ii\s+${package}" &> /dev/null; then
+        if ! dpkg -l | egrep "^ii\s\s${package}\s+" &> /dev/null; then
             packages_to_install+=("${package}")
             echo -e "\t${package}: NOT INSTALLED"
         else
