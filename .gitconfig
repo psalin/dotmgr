@@ -3,3 +3,9 @@
 
 [alias]
     lol = log --oneline --graph --decorate
+    ci = commit -a
+    cian = commit -a --amend --no-edit
+    co = checkout
+    st = status -uall
+    br = branch
+    df = diff
