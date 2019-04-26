@@ -45,10 +45,10 @@ set title
 set titleold=
 
 " Uses 4 spaces (instead of tab) as indentation
-set expandtab
-set tabstop=4
-set softtabstop=0
-set shiftwidth=4
+set expandtab " TABs are spaces
+set tabstop=4 " number of visual spaces per TAB
+set softtabstop=4 " number of spaces per TAB when editing
+set shiftwidth=2 " number of spaces in automatic indentation
 
 " Open vertical split on the right
 set splitright
