@@ -90,7 +90,10 @@ nnoremap j gj
 nnoremap k gk
 
 " Turn off search highlighting
-nnoremap <CR> :nohlsearch<CR>
+" (disabled: in conflict with Syntastic, <CR> is not placing the cursor
+" in the error anymore)
+" TODO: it could be fixed substituting Syntastic by Ale in vim 8
+"nnoremap <CR> :nohlsearch<CR>
 
 " Insert closing brace automatically
 inoremap {<cr> {<cr>}<c-o><s-o>
