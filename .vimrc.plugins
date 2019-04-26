@@ -4,10 +4,6 @@
 "   - filetype plugin on
 "   - syntax enable
 
-" vim-instant-markdown dependencies:
-"   - apt-get install nodejs npm xdg-utils curl
-"   - npm -g install instant-markdown-d
-"
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
@@ -18,7 +14,6 @@ Plug 'arcticicestudio/nord-vim'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
-"Plug 'suan/vim-instant-markdown'
 Plug 'scrooloose/syntastic'
 call plug#end()
 
@@ -40,15 +35,16 @@ map <C-e> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = "+"
 let g:NERDTreeDirArrowCollapsible = "-"
 
-" Not Show hidden files
+" Don't show hidden files
 let NERDTreeShowHidden = 0
 
 " Close vim automatically if NERDTree is the last window/tab
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
+
 "========== vim-gitgutter ==========
 
-" Faster updates (strange behavior)
+" Faster updates (disabled: strange behavior)
 "set updatetime=250
 
 
@@ -56,6 +52,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 noremap <silent> <C-k> :call smooth_scroll#up(&scroll, 15, 2)<CR>
 noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
+
 
 "========== YouCompleteMe ===========
 
@@ -68,14 +65,15 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 "let g:ycm_key_list_previous_completion = ['<S-TAB>']
 "let g:ycm_key_list_stop_completion = ['<C-y>', '<UP>', '<DOWN>']
 "let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
-"
-"
+
+
 "========== vim-instant-markdown =========
 " Disable autostart (:InstantMarkdownPreview to show the file)
-let g:instant_markdown_autostart = 0
+"let g:instant_markdown_autostart = 0
 
 
-"========== syntastic ==========
+"========== Syntastic ==========
+
 function! ToggleSyntastic()
     for i in range(1, winnr('$'))
         let bnum = winbufnr(i)

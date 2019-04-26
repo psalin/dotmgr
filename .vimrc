@@ -1,9 +1,14 @@
+" Load plugin configuration only if vim plug is installed
 if ! empty(glob('~/.vim/autoload/plug.vim'))
     source ~/.dotfiles/.vimrc.plugins
 endif
 
+
 "========== General ==========
-"
+
+" Don't be compatible with vi, so everything will work fine
+set nocompatible
+
 " Syntax color
 syntax on
 
@@ -27,7 +32,7 @@ au InsertLeave * match ExtraWhiteSpace /\s\+$\|\t/
 set hlsearch
 highlight Search ctermbg=Red ctermfg=Yellow
 
-" Find dinamically as we type search term
+" Search dinamically as we type search term
 set incsearch
 
 " Ignore case when searching, unless a capital character is used
@@ -37,6 +42,9 @@ set smartcase
 " Show line numbers
 set number
 
+" Visual autocomplete for command menu
+set wildmenu
+
 " Show file name as window title
 set title
 
@@ -44,20 +52,20 @@ set title
 " not be shown as the title of the terminal
 set titleold=
 
-" Uses 4 spaces (instead of tab) as indentation
+" Uses 4 spaces (instead of TAB) as indentation
 set expandtab " TABs are spaces
 set tabstop=4 " number of visual spaces per TAB
 set softtabstop=4 " number of spaces per TAB when editing
-set shiftwidth=2 " number of spaces in automatic indentation
+set shiftwidth=4 " number of spaces in automatic indentation
+
+" Use 2 spaces for YAML indentation
+au FileType yaml setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
 
 " Open vertical split on the right
 set splitright
 
-" Open horizontal splot on the bottom
+" Open horizontal split on the bottom
 set splitbelow
-
-" Use two spaces for YAML indentation
-au FileType yaml setlocal tabstop=2 expandtab shiftwidth=2 softtabstop=2
 
 " Detect .md extension as markdown filetype
 autocmd BufRead,BufNewFile *.md set filetype=markdown
@@ -69,33 +77,24 @@ endif
 
 
 "========== Key Remaps ==========
-"
-" Remap caps lock key to ctrl key
-"- maps caps lock key to ctrl key when entering vim
-"- remove mapping when exiting vim
-au VimEnter * silent !setxkbmap -option ctrl:nocaps
-au VimLeave * silent !setxkbmap -option
+
+" TODO: Remap ctrl key to caps lock key
 
 " Esc remap
-" Ctrl-C does not trigger InsertLeave autocmd. We need to remap Ctrl-C to Esc
-" to have the same behavior
-inoremap <C-c> <Esc>
+" (Esc is too far away to be confortable)
+inoremap jk <Esc>
 
-" Move cursor in Insert mode
-" (This will not work if YCM window is open)
-inoremap <C-j> <down>
-inoremap <C-k> <up>
-inoremap <C-h> <left>
-inoremap <C-l> <right>
+" Move vertically by visual line
+" (so we don't skip long lines that are wrapped into two or more lines)
+nnoremap j gj
+nnoremap k gk
 
-" tabs shortcuts
-nnoremap th  :tabfirst<CR>
-nnoremap tk  :tabnext<CR>
-nnoremap tj  :tabprev<CR>
-nnoremap tl  :tablast<CR>
-nnoremap tt  :tabedit<Space>
-nnoremap te  :tabedit<Space>
-nnoremap tx  :tabclose<CR>
+" Turn off search highlighting
+nnoremap <CR> :nohlsearch<CR>
 
-" Insert curly brackets automatically
+" Insert closing brace automatically
 inoremap {<cr> {<cr>}<c-o><s-o>
+
+" Copy text from cursor to the end-of-line
+" (to be consistent with C and D operators)
+nnoremap Y y$
