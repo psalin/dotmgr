@@ -81,7 +81,7 @@ function check_and_install_packages() {
     local packages=("$@")
     local packages_to_install=()
     for package in "${packages[@]}"; do
-        if ! dpkg -l | egrep "^ii\s\s${package}\s+" &> /dev/null; then
+        if ! dpkg -l | grep -E "^ii\s\s${package}\s+" &> /dev/null; then
             packages_to_install+=("${package}")
             echo -e "\t${package}: NOT INSTALLED"
         else
@@ -180,8 +180,8 @@ if [ "${parameter_vim_plugins}" = true ]; then
 
     # If we have YouCompleteMe plugin in vim, the plugin will be installed
     # automatically, but we still need to compile the core
-    if [ "$(grep -E "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc.plugins")" ]; then
-        ${HOME}/.vim/plugged/YouCompleteMe/install.py
+    if grep -Eq "^\s*Plug .*YouCompleteMe.*$" "${HOME}/.vimrc.plugins"; then
+        "${HOME}"/.vim/plugged/YouCompleteMe/install.py
     else
         echo "    YouCompleteMe plugin not found in plugin configuration"
     fi
