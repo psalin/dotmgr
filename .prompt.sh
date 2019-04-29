@@ -2,7 +2,7 @@
 
 # Show git brach
 function parse_git_branch() {
-    git branch --no-color 2>/dev/null | grep -E "^.*" | sed "s/\* \(.*\)/ (\1)/"
+    git branch --no-color 2>/dev/null | grep \* | sed "s/\* \(.*\)/ (\1)/"
 }
 
 function set_prompt() {
