@@ -52,6 +52,9 @@ set title
 " not be shown as the title of the terminal
 set titleold=
 
+" Backspace deletes in Insert mode (like always)
+set bs=2
+
 " Uses 4 spaces (instead of TAB) as indentation
 set expandtab " TABs are spaces
 set tabstop=4 " number of visual spaces per TAB
