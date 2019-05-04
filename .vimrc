@@ -100,7 +100,7 @@ function! s:BufferCount() abort
     return len(filter(range(1, bufnr('$')), 'bufwinnr(v:val) != -1'))
 endfunction
 
-command Loc :call s:LoclistToggle()
+command LL :call s:LoclistToggle()
 
 
 "========== Key Remaps ==========
