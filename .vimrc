@@ -1,4 +1,4 @@
-" Load plugin configuration only if vim plug is installed
+" Load plugin configuration only if vim-plug is installed
 if ! empty(glob('~/.vim/autoload/plug.vim'))
     source ~/.dotfiles/.vimrc.plugins
 endif
@@ -64,10 +64,10 @@ set shiftwidth=4 " number of spaces in automatic indentation
 " Use 2 spaces for YAML indentation
 au FileType yaml setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
 
-" Open vertical split on the right
+" Open vertical window split on the right
 set splitright
 
-" Open horizontal split on the bottom
+" Open horizontal window split on the bottom
 set splitbelow
 
 " Detect .md extension as markdown filetype
@@ -77,6 +77,30 @@ autocmd BufRead,BufNewFile *.md set filetype=markdown
 if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
+
+" Close any loclist window if it's the last one
+augroup CloseLoclistWindowGroup
+    autocmd!
+    autocmd QuitPre * if empty(&buftype) | lclose | endif
+augroup END
+
+" Location list window toggle
+" (loclist appears only if it's populated with errors)
+" (https://github.com/Valloric/ListToggle/blob/master/plugin/listtoggle.vim)
+function! s:LoclistToggle() abort
+    let buffer_count_before = s:BufferCount()
+    silent! lclose
+
+    if s:BufferCount() == buffer_count_before
+        silent! lopen
+    endif
+endfunction
+
+function! s:BufferCount() abort
+    return len(filter(range(1, bufnr('$')), 'bufwinnr(v:val) != -1'))
+endfunction
+
+command Loc :call s:LoclistToggle()
 
 
 "========== Key Remaps ==========
@@ -93,14 +117,14 @@ nnoremap j gj
 nnoremap k gk
 
 " Turn off search highlighting
-" (disabled: in conflict with Syntastic, <CR> is not placing the cursor
-" in the error anymore)
-" TODO: it could be fixed substituting Syntastic by Ale in vim 8
+" (disabled: in conflict with Ale, <CR> is not placing the cursor
+" in the error from loclist anymore)
 "nnoremap <CR> :nohlsearch<CR>
 
-" Insert closing brace automatically
+" Insert closing brace automatically when pressing enter after open brace
+" (for example when creating a function's body)
 inoremap {<cr> {<cr>}<c-o><s-o>
 
-" Copy text from cursor to the end-of-line
+" Copy text, from cursor position to the end-of-line
 " (to be consistent with C and D operators)
 nnoremap Y y$

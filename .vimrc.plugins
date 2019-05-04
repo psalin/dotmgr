@@ -14,8 +14,10 @@ Plug 'arcticicestudio/nord-vim'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'w0rp/ale'
 "Plug 'scrooloose/syntastic'
 call plug#end()
+
 
 "========== vim-airline ==========
 
@@ -42,12 +44,6 @@ let NERDTreeShowHidden = 0
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
-"========== vim-gitgutter ==========
-
-" Faster updates (disabled: strange behavior)
-"set updatetime=250
-
-
 "========== vim-smooth-scroll ===========
 
 noremap <silent> <C-k> :call smooth_scroll#up(&scroll, 15, 2)<CR>
@@ -68,27 +64,13 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 
 
 "========== vim-instant-markdown =========
+"
 " Disable autostart (:InstantMarkdownPreview to show the file)
 "let g:instant_markdown_autostart = 0
 
 
-""========== Syntastic ==========
-"
-"function! ToggleSyntastic()
-"    for i in range(1, winnr('$'))
-"        let bnum = winbufnr(i)
-"        if getbufvar(bnum, '&buftype') == 'quickfix'
-"            lclose
-"            return
-"        endif
-"    endfor
-"    SyntasticCheck
-"endfunction
-"
-"" Remapping key and command
-""nnoremap <F8> :call ToggleSyntastic()<CR>
-"command Sc :call ToggleSyntastic()
-"
+"========== Syntastic ==========
+
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
@@ -98,3 +80,14 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 "let g:syntastic_auto_loc_list = 1
 "let g:syntastic_check_on_open = 0
 "let g:syntastic_check_on_wq = 0
+
+
+"========== Ale ==========
+"
+" Reduce linter execution
+"let g:ale_lint_delay = 1000
+
+" Do not lint a file when open it.
+" - save us from executing the linters if we only want to read the file
+" - it will reduce the opening time
+let g:ale_lint_on_enter = 0
