@@ -14,7 +14,7 @@ Plug 'arcticicestudio/nord-vim'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'scrooloose/syntastic'
+"Plug 'scrooloose/syntastic'
 call plug#end()
 
 "========== vim-airline ==========
@@ -72,29 +72,29 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 "let g:instant_markdown_autostart = 0
 
 
-"========== Syntastic ==========
-
-function! ToggleSyntastic()
-    for i in range(1, winnr('$'))
-        let bnum = winbufnr(i)
-        if getbufvar(bnum, '&buftype') == 'quickfix'
-            lclose
-            return
-        endif
-    endfor
-    SyntasticCheck
-endfunction
-
-" Remapping key and command
-"nnoremap <F8> :call ToggleSyntastic()<CR>
-command Sc :call ToggleSyntastic()
-
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_enable_signs = 1
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
+""========== Syntastic ==========
+"
+"function! ToggleSyntastic()
+"    for i in range(1, winnr('$'))
+"        let bnum = winbufnr(i)
+"        if getbufvar(bnum, '&buftype') == 'quickfix'
+"            lclose
+"            return
+"        endif
+"    endfor
+"    SyntasticCheck
+"endfunction
+"
+"" Remapping key and command
+""nnoremap <F8> :call ToggleSyntastic()<CR>
+"command Sc :call ToggleSyntastic()
+"
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"
+"let g:syntastic_enable_signs = 1
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 0
+"let g:syntastic_check_on_wq = 0
