@@ -91,3 +91,9 @@ noremap <silent> <C-j> :call smooth_scroll#down(&scroll, 15, 2)<CR>
 " - save us from executing the linters if we only want to read the file
 " - it will reduce the opening time
 let g:ale_lint_on_enter = 0
+
+" Disable Ale by default, so it will not bother linting.
+let g:ale_enabled = 0
+
+" Toggle Ale with a key
+nnoremap <F8> :ALEToggle<CR>
