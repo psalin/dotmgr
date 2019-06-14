@@ -13,12 +13,12 @@ dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 # dotfiles array keeps the list of dotfiles with the next format:
 #   "origin_dotfile destination_of_dotfile"
 dotfiles=(
-    "${dotfiles_dir}/.bashrc ${HOME}/.bashrc"
-    "${dotfiles_dir}/.vimrc ${HOME}/.vimrc"
-    "${dotfiles_dir}/.vimrc.plugins ${HOME}/.vimrc.plugins"
-    "${dotfiles_dir}/.gitconfig ${HOME}/.gitconfig"
-    "${dotfiles_dir}/.dircolors ${HOME}/.dircolors"
-    "${dotfiles_dir}/.xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
+    "${dotfiles_dir}/bashrc ${HOME}/.bashrc"
+    "${dotfiles_dir}/vimrc ${HOME}/.vimrc"
+    "${dotfiles_dir}/vimrc.plugins ${HOME}/.vimrc.plugins"
+    "${dotfiles_dir}/gitconfig ${HOME}/.gitconfig"
+    "${dotfiles_dir}/dircolors ${HOME}/.dircolors"
+    "${dotfiles_dir}/xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
 )
 
 basic_packages=(
@@ -56,20 +56,16 @@ function install_dotfiles() {
 
         echo -e "\t${origin_file} -> ${destination_file}"
 
-        # Backup the original file
-        if [ -f "${destination_file}" ]; then
-            if [ ! -h "${destination_file}" ]; then
-                mv "${destination_file}" "${destination_file}_${date_of_backup}.bak"
-            else
-                rm "${destination_file}"
-            fi
-        fi
-
-        # Create destination directory if it does not exist
         dir="${destination_file%${destination_file##*/}}"
         if [ ! -d "${dir}" ]; then
             echo "${dir} does not exist!"
             mkdir -p "${dir}"
+        else
+            if [ -f "${destination_file}" ]; then
+                mv "${destination_file}" "${destination_file}_${date_of_backup}.bak"
+            elif [ -h "${destination_file}" ]; then
+                rm "${destination_file}"
+            fi
         fi
 
         ln -s "${origin_file}" "${destination_file}"
@@ -81,7 +77,7 @@ function install_dotfiles() {
         dconf dump /org/gnome/terminal/legacy/profiles:/ > \
             "${HOME}/.gnome-terminal-profile.dconf.bak"
         dconf load /org/gnome/terminal/legacy/profiles:/ < \
-            "${dotfiles_dir}/.gnome-terminal-profile.dconf"
+            "${dotfiles_dir}/gnome-terminal-profile.dconf"
     fi
 }
 

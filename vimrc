@@ -1,6 +1,6 @@
 " Load plugin configuration only if vim-plug is installed
 if ! empty(glob('~/.vim/autoload/plug.vim'))
-    source ~/.dotfiles/.vimrc.plugins
+    source ~/.vimrc.plugins
 endif
 
 
