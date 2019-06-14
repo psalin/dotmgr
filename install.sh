@@ -18,6 +18,7 @@ dotfiles=(
     "${dotfiles_dir}/.vimrc.plugins ${HOME}/.vimrc.plugins"
     "${dotfiles_dir}/.gitconfig ${HOME}/.gitconfig"
     "${dotfiles_dir}/.dircolors ${HOME}/.dircolors"
+    "${dotfiles_dir}/.xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
 )
 
 basic_packages=(
