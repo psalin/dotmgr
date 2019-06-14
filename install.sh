@@ -65,6 +65,13 @@ function install_dotfiles() {
             fi
         fi
 
+        # Create destination directory if it does not exist
+        dir="${destination_file%${destination_file##*/}}"
+        if [ ! -d "${dir}" ]; then
+            echo "${dir} does not exist!"
+            mkdir -p "${dir}"
+        fi
+
         ln -s "${origin_file}" "${destination_file}"
     done
 
