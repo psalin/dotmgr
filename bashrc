@@ -7,12 +7,12 @@ esac
 # Source bashrc configuration files
 dotfiles_dir="${HOME}/.dotfiles"
 config_files=(
-    .aliases.sh
-    .environment.sh
-    .exports.sh
-    .functions.sh
-    .prompt.sh
-    .software-config.sh
+    aliases
+    environment
+    exports
+    functions
+    prompt
+    software-config
 )
 
 for file in "${config_files[@]}"; do
