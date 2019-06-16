@@ -196,8 +196,6 @@ function install_packages() {
         __log_success "${package}: Installed"
     done
 
-    return
-
     if [ ${#packages_not_installed[@]} -ne 0 ]; then
         echo
         echo "Installing following packages: ${packages_not_installed[@]}"
