@@ -27,11 +27,8 @@ xfce_profile=(
 basic_packages_list=(
     curl
     git
-    shellcheck
-    flake8
-    build-essential
-    cmake
 )
+
 packages_not_installed=()
 
 # Variables to hold calling options
