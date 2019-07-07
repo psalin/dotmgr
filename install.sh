@@ -279,7 +279,7 @@ function install_vim() {
     fi
 }
 
-function install() {
+function install_main() {
     if [ "${parameter_dotfiles}" = true ]; then
         echo
         echo "Installing dotfiles as symlinks"
@@ -388,5 +388,5 @@ while (( "$#" )); do
     esac
 done
 
-install
+install_main
 __cleanup
