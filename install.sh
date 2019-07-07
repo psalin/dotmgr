@@ -114,7 +114,7 @@ function install_dotfiles() {
 
         dir="${destination_file%${destination_file##*/}}"
         if [ ! -d "${dir}" ]; then
-            if ! mkdir -p "${dir}" $> /dev/null; then
+            if ! mkdir -p "${dir}" &> /dev/null; then
                 __log_error "${filename}: Cannot create destination directory"
                 __summary_error 1
             fi
