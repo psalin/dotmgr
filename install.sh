@@ -12,6 +12,10 @@ dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
 # dotfiles array keeps the list of dotfiles with the next format:
 #   "origin_dotfile destination_of_dotfile"
+#
+# - if the origin_dotfile is a file, it is symlinked from the destination.
+# - if the origin_dotfile is a directory, all files under it are symlinked
+#   from the same directory structure under the destination directory
 dotfiles_list=(
     "${dotfiles_dir}/bashrc ${HOME}/.bashrc"
     "${dotfiles_dir}/vimrc ${HOME}/.vimrc"
