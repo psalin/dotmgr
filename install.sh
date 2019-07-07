@@ -45,18 +45,21 @@ parameter_gnome_terminal=false
 
 # Log output handling from installation script of Nord theme
 # https://github.com/arcticicestudio/
-_ct_error="\e[0;31m"
-_ct_success="\e[0;32m"
-_ct_warning="\e[0;33m"
-_ct_highlight="\e[0;34m"
-_ct_primary="\e[0;36m"
+
+# Not yet used, commented to prevent shellcheck warnings, uncomment when needed
+#_ct_error="\e[0;31m"
+#_ct_success="\e[0;32m"
+#_ct_warning="\e[0;33m"
+#_ct_highlight="\e[0;34m"
+#_ct_primary="\e[0;36m"
+#_ctb_subtle="\e[1;30m"
+#_ctb_highlight="\e[1;34m"
+#_ctb_primary="\e[1;36m"
+
 _ct="\e[0;37m"
-_ctb_subtle="\e[1;30m"
 _ctb_error="\e[1;31m"
 _ctb_success="\e[1;32m"
 _ctb_warning="\e[1;33m"
-_ctb_highlight="\e[1;34m"
-_ctb_primary="\e[1;36m"
 _ctb="\e[1;37m"
 _c_reset="\e[0m"
 _ctb_reset="\e[0m"
@@ -71,19 +74,19 @@ __cleanup() {
 }
 
 __log_error() {
-  printf "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n"
 }
 
 __log_success() {
-  printf "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n"
 }
 
 __log_warning() {
-  printf "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n"
 }
 
 __log_info() {
-  printf "${_ctb}[INFO] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n"
 }
 
 __summary_success() {
@@ -207,8 +210,7 @@ function install_packages() {
         # Returned values different than 0 from a function will cause the
         # script to stop if "set -e" is used.
         set +e
-        check_package "${package}"
-        if [ $? -ne 0 ]; then
+        if ! check_package "${package}"; then
             __log_info "${package}: Not installed"
             packages_not_installed+=("${package}")
             continue
@@ -219,7 +221,7 @@ function install_packages() {
 
     if [ ${#packages_not_installed[@]} -ne 0 ]; then
         echo
-        echo "Installing following packages: ${packages_not_installed[@]}"
+        echo "Installing following packages: ${packages_not_installed[*]}"
         sudo apt-get update
         echo
         sudo apt-get install -y "${packages_not_installed[@]}"
@@ -237,8 +239,7 @@ function install_vim() {
         # Returned values different than 0 from a function will cause the
         # script to stop if "set -e" is used.
         set +e
-        check_package "${package}"
-        if [ $? -ne 0 ]; then
+        if ! check_package "${package}"; then
             __log_info "${package}: Not installed"
             packages_not_installed+=("${package}")
             continue
@@ -350,7 +351,7 @@ EOF
 }
 
 #################################################################################
-trap "printf '\n${_ctb_error}User aborted.${_ctb_reset}\n' && exit 1" SIGINT SIGTERM
+trap 'printf "\n${_ctb_error}User aborted.${_ctb_reset}\n" && exit 1' SIGINT SIGTERM
 
 if [ "$#" == 0 ]; then
     show_help
@@ -373,7 +374,7 @@ while (( "$#" )); do
             ;;
         --packages)
             parameter_packages=true
-            aditional_packages_list+=($2)
+            aditional_packages_list+=("$2")
             shift 2
             ;;
         --gnome-terminal)
