@@ -207,15 +207,11 @@ function install_packages() {
     local packages=("$@")
     local packages_not_installed=()
     for package in "${packages[@]}"; do
-        # Returned values different than 0 from a function will cause the
-        # script to stop if "set -e" is used.
-        set +e
         if ! check_package "${package}"; then
             __log_info "${package}: Not installed"
             packages_not_installed+=("${package}")
             continue
         fi
-        set -e
         __log_success "${package}: Installed"
     done
 
@@ -236,15 +232,11 @@ function install_packages() {
 function install_vim() {
     local packages_not_installed=()
     for package in "${basic_packages_list[@]}"; do
-        # Returned values different than 0 from a function will cause the
-        # script to stop if "set -e" is used.
-        set +e
         if ! check_package "${package}"; then
             __log_info "${package}: Not installed"
             packages_not_installed+=("${package}")
             continue
         fi
-        set -e
     done
 
     if [ ${#packages_not_installed[@]} -ne 0 ]; then
