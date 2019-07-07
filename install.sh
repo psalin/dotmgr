@@ -99,8 +99,6 @@ function install_dotfiles() {
     local dotfiles=("$@")
     local origin_file
     local destination_file
-    local date_of_backup
-    date_of_backup="$(date +%Y%m%d)"
 
     for i in ${!dotfiles[*]}; do
         origin_file=$(echo "${dotfiles[$i]}" | cut -d " " -f1)
@@ -112,33 +110,42 @@ function install_dotfiles() {
             continue
         fi
 
-        dir="${destination_file%${destination_file##*/}}"
-        if [ ! -d "${dir}" ]; then
-            if ! mkdir -p "${dir}" &> /dev/null; then
-                __log_error "${filename}: Cannot create destination directory"
-                __summary_error 1
-            fi
-        fi
+        symlink_file "${origin_file}" "${destination_file}"
+    done
+}
 
-        if [ -h "${destination_file}" ]; then
-            if ! rm "${destination_file}" &> /dev/null; then
-                __log_error "${filename}: Cannot remove the old symlink"
-                __summary_error 1
-            fi
-        elif [ -f "${destination_file}" ]; then
-            if ! mv "${destination_file}" "${destination_file}_${date_of_backup}.bak" &> /dev/null; then
-                __log_error "${filename}: Cannot create backup from original file"
-                __summary_error 1
-            fi
-        fi
+function symlink_file() {
+    local origin_file="$1"
+    local destination_file="$2"
+    local date_of_backup
+    date_of_backup="$(date +%Y%m%d)"
 
-        if ! ln -s "${origin_file}" "${destination_file}" &> /dev/null; then
-            __log_error "${filename}: Cannot create symlink"
+    dir="${destination_file%${destination_file##*/}}"
+    if [ ! -d "${dir}" ]; then
+        if ! mkdir -p "${dir}" &> /dev/null; then
+            __log_error "${filename}: Cannot create destination directory"
             __summary_error 1
         fi
+    fi
 
-        __log_success "${filename}: ${origin_file} -> ${destination_file}"
-    done
+    if [ -h "${destination_file}" ]; then
+        if ! rm "${destination_file}" &> /dev/null; then
+            __log_error "${filename}: Cannot remove the old symlink"
+            __summary_error 1
+        fi
+    elif [ -f "${destination_file}" ]; then
+        if ! mv "${destination_file}" "${destination_file}_${date_of_backup}.bak" &> /dev/null; then
+            __log_error "${filename}: Cannot create backup from original file"
+            __summary_error 1
+        fi
+    fi
+
+    if ! ln -s "${origin_file}" "${destination_file}" &> /dev/null; then
+        __log_error "${filename}: Cannot create symlink"
+        __summary_error 1
+    fi
+
+    __log_success "${filename}: ${origin_file} -> ${destination_file}"
 }
 
 function install_gnome_terminal_profile() {
