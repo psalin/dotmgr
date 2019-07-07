@@ -105,12 +105,16 @@ function install_dotfiles() {
         destination_file=$(echo "${dotfiles[$i]}" | cut -d " " -f2)
         filename=$(basename "${origin_file}")
 
-        if [ ! -f "${origin_file}" ]; then
-            __log_warning "${filename}: not found. Skipping..."
-            continue
-        fi
+        if [ -f "${origin_file}" ]; then
+            symlink_file "${origin_file}" "${destination_file}"
 
-        symlink_file "${origin_file}" "${destination_file}"
+        elif [ -d "${origin_file}" ]; then
+            symlink_files_in_dirtree "${origin_file}" "${destination_file}"
+
+        else
+            __log_warning "${filename}: not found."
+
+        fi
     done
 }
 
