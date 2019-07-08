@@ -19,11 +19,6 @@ dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 dotfiles_list=(
 )
 
-gnome_profile="${dotfiles_dir}/gnome-terminal-profile.dconf"
-xfce_profile=(
-    "${dotfiles_dir}/xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
-)
-
 # basic_packages_list defines the packages to be installed when
 # the --basic-packages option is given
 basic_packages_list=(
@@ -169,6 +164,9 @@ function symlink_file() {
 }
 
 function install_gnome_terminal_profile() {
+    local gnome_profile
+    gnome_profile="${dotfiles_dir}/gnome-terminal-profile.dconf"
+    local filename
     filename=$(basename "${gnome_profile}")
 
     if [ ! -f "${gnome_profile}" ]; then
@@ -324,6 +322,10 @@ function install_main() {
     if [ "${parameter_xfce_terminal}" = true ]; then
         echo
         echo "Installing xfce4-terminal profile"
+        local xfce_profile
+        xfce_profile=(
+            "${dotfiles_dir}/xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
+        )
         install_dotfiles "${xfce_profile[@]}"
     fi
 
