@@ -289,6 +289,7 @@ function read_conffile() {
 
     # shellcheck source=/dev/null
     source "${conffile}"
+    cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
     __log_success "Found configuration file: ${conffile}"
 }
 
