@@ -10,7 +10,7 @@ set -euo pipefail
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
-# dotfiles array keeps the list of dotfiles with the next format:
+# dotfiles_list keeps the list of dotfiles with the next format:
 #   "origin_dotfile destination_of_dotfile"
 #
 # - if the origin_dotfile is a file, it is symlinked from the destination.
@@ -28,6 +28,9 @@ gnome_profile="${dotfiles_dir}/gnome-terminal-profile.dconf"
 xfce_profile=(
     "${dotfiles_dir}/xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
 )
+
+# basic_packages_list defines the packages to be installed when
+# the --basic-packages option is given
 basic_packages_list=(
     curl
     git
@@ -36,6 +39,7 @@ basic_packages_list=(
 packages_not_installed=()
 
 # Variables to hold calling options
+parameter_conffile=""
 parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
@@ -109,8 +113,8 @@ function install_dotfiles() {
     local filename
 
     for i in ${!dotfiles[*]}; do
-        origin_file=$(echo "${dotfiles[$i]}" | cut -d " " -f1)
-        destination_file=$(echo "${dotfiles[$i]}" | cut -d " " -f2)
+        origin_file=$(realpath -sm "$(echo "${dotfiles[$i]}" | cut -d " " -f1)")
+        destination_file=$(realpath -sm "$(echo "${dotfiles[$i]}" | cut -d " " -f2)")
         filename=$(basename "${origin_file}")
 
         if [ -f "${origin_file}" ]; then
@@ -282,7 +286,23 @@ function install_vim() {
     fi
 }
 
+function read_conffile() {
+    local conffile="$1"
+
+    if [ ! -f "${conffile}" ]; then
+        __log_error "Configuration file not found: ${conffile}"
+        __summary_error 1
+    fi
+
+    # shellcheck source=/dev/null
+    source "${conffile}"
+    __log_success "Found configuration file: ${conffile}"
+}
+
 function install_main() {
+    if [ -n "${parameter_conffile}" ]; then
+        read_conffile "${parameter_conffile}"
+    fi
     if [ "${parameter_dotfiles}" = true ]; then
         echo
         echo "Installing dotfiles as symlinks"
@@ -329,6 +349,7 @@ Install dotfiles and packages for the user.
 If no argument is indicated, the script will not perform any action.
 
 List of arguments:
+  --conffile conffile       Path to the configuration file to use
   --dotfiles                Install the dotfiles
   --vim                     Install VIM 8 and VIM plugins
   --basic-packages          Install basic packages:
@@ -355,6 +376,10 @@ fi
 
 while (( "$#" )); do
     case "$1" in
+        --conffile)
+            parameter_conffile="$2"
+            shift 2
+            ;;
         --dotfiles)
             parameter_dotfiles=true
             shift
