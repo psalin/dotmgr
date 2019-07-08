@@ -106,6 +106,7 @@ function install_dotfiles() {
     local dotfiles=("$@")
     local origin_file
     local destination_file
+    local filename
 
     for i in ${!dotfiles[*]}; do
         origin_file=$(echo "${dotfiles[$i]}" | cut -d " " -f1)
@@ -139,6 +140,8 @@ function symlink_file() {
     local destination_file="$2"
     local date_of_backup
     date_of_backup="$(date +%Y%m%d)"
+    local filename
+    filename=$(basename "${origin_file}")
 
     dir="${destination_file%${destination_file##*/}}"
     if [ ! -d "${dir}" ]; then
