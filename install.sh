@@ -17,11 +17,6 @@ dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 # - if the origin_dotfile is a directory, all files under it are symlinked
 #   from the same directory structure under the destination directory
 dotfiles_list=(
-    "${dotfiles_dir}/bashrc ${HOME}/.bashrc"
-    "${dotfiles_dir}/vimrc ${HOME}/.vimrc"
-    "${dotfiles_dir}/vimrc.plugins ${HOME}/.vimrc.plugins"
-    "${dotfiles_dir}/gitconfig ${HOME}/.gitconfig"
-    "${dotfiles_dir}/dircolors ${HOME}/.dircolors"
 )
 
 gnome_profile="${dotfiles_dir}/gnome-terminal-profile.dconf"
@@ -32,14 +27,12 @@ xfce_profile=(
 # basic_packages_list defines the packages to be installed when
 # the --basic-packages option is given
 basic_packages_list=(
-    curl
-    git
 )
 
 packages_not_installed=()
 
 # Variables to hold calling options
-parameter_conffile=""
+parameter_conffile="dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
 parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
