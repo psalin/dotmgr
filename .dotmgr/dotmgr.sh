@@ -273,7 +273,7 @@ function install_main() {
 
 function show_help() {
     cat <<EOF
-Usage: install.sh OPTION1 [OPTION2] ...
+Usage: dotmgr.sh OPTION1 [OPTION2] ...
 
 Install dotfiles and packages for the user.
 If no argument is indicated, the script will not perform any action.
