@@ -229,9 +229,14 @@ function run_scripts() {
                 continue
             fi
         fi
+
+        pushd "$PWD" > /dev/null
+
         # shellcheck source=/dev/null
         source "${script_path}"
         __log_success "${script}: Script was executed"
+
+        popd > /dev/null  # Make sure we are always at the working dir after script execution
     done
 }
 
