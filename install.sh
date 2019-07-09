@@ -10,6 +10,7 @@ set -euo pipefail
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 script_dir=scripts
+script_help_cmd="${script_dir}/help.sh"
 
 # dotfiles_list keeps the list of dotfiles with the next format:
 #   "origin_dotfile destination_of_dotfile"
@@ -389,6 +390,10 @@ List of arguments:
   --xfce-terminal           Install the profile for xfce4-terminal
   -h, --help                Show this help.
 EOF
+
+    if [ -f "${script_help_cmd}" ]; then
+        bash "${script_help_cmd}"
+    fi
 }
 
 #################################################################################
