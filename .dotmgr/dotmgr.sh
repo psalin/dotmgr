@@ -284,17 +284,11 @@ Install dotfiles and packages for the user.
 If no argument is indicated, the script will not perform any action.
 
 List of arguments:
-  --conffile conffile       Path to the configuration file to use
-  --dotfiles                Install the dotfiles
-  --basic-packages          Install basic packages:
-                                - curl
-                                - git
-                                - shellcheck
-                                - flake8
-                                - build-essential
-                                - cmake
-  --packages "package ..."  Install a list of packages
-  -s, --script SCRIPTNAME   Executes script SCRIPTNAME
+  -c, --conffile conffile   Path to the configuration file to use
+  -d, --dotfiles            Install the dotfiles
+  -p, --basic-packages      Install basic packages
+  -P, --packages PKG        Install a package
+  -s, --script SCRIPTNAME   Execute script SCRIPTNAME
   -h, --help                Show this help.
 EOF
 
@@ -313,19 +307,19 @@ fi
 
 while (( "$#" )); do
     case "$1" in
-        --conffile)
+        --conffile | -c)
             parameter_conffile="$2"
             shift 2
             ;;
-        --dotfiles)
+        --dotfiles | -d)
             parameter_dotfiles=true
             shift
             ;;
-        --basic-packages)
+        --basic-packages | -p)
             parameter_basic_packages=true
             shift
             ;;
-        --packages)
+        --packages | -P)
             parameter_packages=true
             aditional_packages_list+=("$2")
             shift 2
