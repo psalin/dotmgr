@@ -33,7 +33,6 @@ parameter_basic_packages=false
 parameter_packages=false
 parameter_scripts=()
 parameter_xfce_terminal=false
-parameter_gnome_terminal=false
 
 # Log output handling from installation script of Nord theme
 # https://github.com/arcticicestudio/
@@ -163,35 +162,6 @@ function symlink_file() {
     __log_success "${filename}: ${origin_file} -> ${destination_file}"
 }
 
-function install_gnome_terminal_profile() {
-    local gnome_profile
-    gnome_profile="${dotfiles_dir}/gnome-terminal-profile.dconf"
-    local filename
-    filename=$(basename "${gnome_profile}")
-
-    if [ ! -f "${gnome_profile}" ]; then
-        __log_warning "${filename}: not found. Skipping..."
-        return
-    fi
-
-    __log_warning "dconf utility not found. Skipping..."
-    return
-
-    # Create backup of the current profile
-    if ! dconf dump /org/gnome/terminal/legacy/profiles:/ > \
-        "${HOME}/.gnome-terminal-profile.dconf.bak" &> /dev/null; then
-        __log_error "${filename}: Cannot backup current profile"
-        __summary_error 1
-    fi
-
-    # Load the new configuration
-    if ! dconf load /org/gnome/terminal/legacy/profiles:/ < \
-        "${dotfiles_dir}/gnome-terminal-profile.dconf" &> /dev/null; then
-        __log_error "${filename}: Cannot load profile"
-        __summary_error 1
-    fi
-}
-
 function check_package() {
     local package="$1"
     if ! dpkg-query -W --showformat='${Status}\n' "${package}" | grep -q "install ok installed"; then
@@ -294,12 +264,6 @@ function install_main() {
         run_scripts "${parameter_scripts[@]}"
     fi
 
-    if [ "${parameter_gnome_terminal}" = true ]; then
-        echo
-        echo "Installing GNOME-terminal profile"
-        install_gnome_terminal_profile
-    fi
-
     if [ "${parameter_xfce_terminal}" = true ]; then
         echo
         echo "Installing xfce4-terminal profile"
@@ -332,7 +296,6 @@ List of arguments:
                                 - cmake
   --packages "package ..."  Install a list of packages
   -s, --script SCRIPTNAME   Executes script SCRIPTNAME
-  --gnome-terminal          Install the profile for GNOME-terminal
   --xfce-terminal           Install the profile for xfce4-terminal
   -h, --help                Show this help.
 EOF
@@ -372,10 +335,6 @@ while (( "$#" )); do
         --script | -s)
             parameter_scripts+=("$2")
             shift 2
-            ;;
-        --gnome-terminal)
-            parameter_gnome_terminal=true
-            shift
             ;;
         --xfce-terminal)
             parameter_xfce_terminal=true
