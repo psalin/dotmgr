@@ -194,7 +194,7 @@ function install_gnome_terminal_profile() {
 
 function check_package() {
     local package="$1"
-    if ! dpkg -l | grep -E "^ii\s\s${package}\s+" &> /dev/null; then
+    if ! dpkg-query -W --showformat='${Status}\n' "${package}" | grep -q "install ok installed"; then
         return 1
     fi
 
