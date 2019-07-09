@@ -5,10 +5,13 @@ set -euo pipefail
 # TODO:
 #   - dry run option
 
+
+basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+
 # Disable unused warning because scripts might use this
 # shellcheck disable=SC2034
-dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
-script_dir=scripts
+dotfiles_dir="${basedir}/../dotfiles"
+script_dir="${basedir}/../scripts"
 script_help_cmd="${script_dir}/help.sh"
 
 # dotfiles_list keeps the list of dotfiles with the next format:
@@ -28,7 +31,7 @@ basic_packages_list=(
 packages_not_installed=()
 
 # Variables to hold calling options
-parameter_conffile="dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
+parameter_conffile="${basedir}/../dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
 parameter_help=false
 parameter_dotfiles=false
 parameter_basic_packages=false
