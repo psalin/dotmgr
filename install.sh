@@ -5,6 +5,8 @@ set -euo pipefail
 # TODO:
 #   - dry run option
 
+# Disable unused warning because scripts might use this
+# shellcheck disable=SC2034
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 script_dir=scripts
 script_help_cmd="${script_dir}/help.sh"
@@ -32,7 +34,6 @@ parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
 parameter_scripts=()
-parameter_xfce_terminal=false
 
 # Log output handling from installation script of Nord theme
 # https://github.com/arcticicestudio/
@@ -264,16 +265,6 @@ function install_main() {
         run_scripts "${parameter_scripts[@]}"
     fi
 
-    if [ "${parameter_xfce_terminal}" = true ]; then
-        echo
-        echo "Installing xfce4-terminal profile"
-        local xfce_profile
-        xfce_profile=(
-            "${dotfiles_dir}/xfce4-terminal-nord.theme ${HOME}/.local/share/xfce4/terminal/colorschemes/nord.theme"
-        )
-        install_dotfiles "${xfce_profile[@]}"
-    fi
-
     echo
 }
 
@@ -296,7 +287,6 @@ List of arguments:
                                 - cmake
   --packages "package ..."  Install a list of packages
   -s, --script SCRIPTNAME   Executes script SCRIPTNAME
-  --xfce-terminal           Install the profile for xfce4-terminal
   -h, --help                Show this help.
 EOF
 
@@ -335,10 +325,6 @@ while (( "$#" )); do
         --script | -s)
             parameter_scripts+=("$2")
             shift 2
-            ;;
-        --xfce-terminal)
-            parameter_xfce_terminal=true
-            shift
             ;;
         --help | -h)
             parameter_help=true
