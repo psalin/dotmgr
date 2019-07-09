@@ -9,6 +9,7 @@ set -euo pipefail
 # paths for files i.e. ~/.vim/plugged/
 
 dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+script_dir=scripts
 
 # dotfiles_list keeps the list of dotfiles with the next format:
 #   "origin_dotfile destination_of_dotfile"
@@ -31,6 +32,7 @@ parameter_conffile="dotfiles.conf" # Set default to empty to disable the conffil
 parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
+parameter_scripts=()
 parameter_vim=false
 parameter_xfce_terminal=false
 parameter_gnome_terminal=false
@@ -294,6 +296,23 @@ function read_conffile() {
     __log_success "Found configuration file: ${conffile}"
 }
 
+function run_scripts() {
+    local scripts=("$@")
+    local script_path
+
+    for script in "${scripts[@]}"; do
+        if ! script_path=$(realpath -e "${script_dir}/${script}" 2> /dev/null); then
+            if ! script_path=$(realpath -e "${script_dir}/${script}.sh" 2> /dev/null); then
+                __log_warning "${script_dir}/${script}: Script does not exist"
+                continue
+            fi
+        fi
+        # shellcheck source=/dev/null
+        source "${script_path}"
+        __log_success "${script}: Script was executed"
+    done
+}
+
 function install_main() {
     if [ -n "${parameter_conffile}" ]; then
         read_conffile "${parameter_conffile}"
@@ -314,6 +333,12 @@ function install_main() {
         echo
         echo "Installing aditional packages"
         install_packages "${aditional_packages_list[@]}"
+    fi
+
+    if [ ${#parameter_scripts[@]} -ne 0 ]; then
+        echo
+        echo "Running scripts"
+        run_scripts "${parameter_scripts[@]}"
     fi
 
     if [ "${parameter_gnome_terminal}" = true ]; then
@@ -359,6 +384,7 @@ List of arguments:
                                 - build-essential
                                 - cmake
   --packages "package ..."  Install a list of packages
+  -s, --script SCRIPTNAME   Executes script SCRIPTNAME
   --gnome-terminal          Install the profile for GNOME-terminal
   --xfce-terminal           Install the profile for xfce4-terminal
   -h, --help                Show this help.
@@ -394,6 +420,10 @@ while (( "$#" )); do
         --packages)
             parameter_packages=true
             aditional_packages_list+=("$2")
+            shift 2
+            ;;
+        --script | -s)
+            parameter_scripts+=("$2")
             shift 2
             ;;
         --gnome-terminal)
