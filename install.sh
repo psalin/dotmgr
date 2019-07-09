@@ -222,7 +222,10 @@ function install_packages() {
         echo
         echo "Checking packages"
         for package in "${packages[@]}"; do
-            check_package "${package}"
+            if ! check_package "${package}"; then
+                __log_error "${package}: not installed"
+                __summary_error 1
+            fi
         done
     fi
 }
