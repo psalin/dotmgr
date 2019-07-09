@@ -30,6 +30,7 @@ packages_not_installed=()
 
 # Variables to hold calling options
 parameter_conffile="dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
+parameter_help=false
 parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
@@ -318,6 +319,11 @@ function install_main() {
     if [ -n "${parameter_conffile}" ]; then
         read_conffile "${parameter_conffile}"
     fi
+
+    if [ "${parameter_help}" = true ]; then
+        show_help
+        exit 0
+    fi
     if [ "${parameter_dotfiles}" = true ]; then
         echo
         echo "Installing dotfiles as symlinks"
@@ -440,8 +446,8 @@ while (( "$#" )); do
             shift
             ;;
         --help | -h)
-            show_help
-            exit 0
+            parameter_help=true
+            shift
             ;;
         *)
             echo "Error: Unsupported parameter $1" >&2
