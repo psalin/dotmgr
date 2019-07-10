@@ -1,21 +1,13 @@
-# Dotfiles and basic setup
+# Dotmgr
 
-## 1. Installation instructions
-- Clone this repository:
+Script for managing dotfile installation and environment setup.
 
-      git clone https://github.com/jsanjoseg/dotfiles ~/.dotfiles
+## Usage
 
-- Run installation script:
+Can be used as e.g. a git submodule in a gitfiles repository.
 
-      cd .dotfiles/ && ./install.sh
+#### Examples
 
-## 2. gnome-terminal profile
-- To backup profile:
+https://github.com/esalipe/dotfiles
 
-      dconf dump /org/gnome/terminal/legacy/profiles:/ > \
-      ~/.dotfiles/.gnome-terminal-profile.dconf
-
-- To restore profile (done with installation script):
-
-      dconf load /org/gnome/terminal/legacy/profiles:/ < \
-      ~/.dotfiles/.gnome-terminal-profile.dconf
+https://github.com/esalipe/dotfiles-test
