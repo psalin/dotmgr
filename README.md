@@ -4,7 +4,7 @@ Script for managing dotfile installation and environment setup.
 
 ## Usage
 
-Can be used as e.g. a git submodule in a gitfiles repository.
+Can, for example, be used as a git submodule in a dotfiles repository.
 
 #### Examples
 
