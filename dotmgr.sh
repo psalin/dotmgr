@@ -242,8 +242,12 @@ function run_scripts() {
 
         __log_info "Running script: ${script}"
         # shellcheck source=/dev/null
-        source "${script_path}"
-        __log_success "Script executed: ${script}"
+        if source "${script_path}"; then
+            __log_success "Script executed: ${script}"
+        else
+            __log_error "Script executed with errors: ${script}"
+            __summary_error 1
+        fi
 
         popd > /dev/null  # Make sure we are always at the working dir after script execution
     done
