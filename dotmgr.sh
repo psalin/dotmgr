@@ -188,6 +188,13 @@ function install_packages() {
     done
 
     if [ ${#packages_not_installed[@]} -ne 0 ]; then
+        if ! sudo -v; then
+            __log_warning "Could not install packages, no sudo rights"
+            return 1
+        fi
+    fi
+
+    if [ ${#packages_not_installed[@]} -ne 0 ]; then
         echo
         echo "Installing following packages: ${packages_not_installed[*]}"
         sudo apt-get update
