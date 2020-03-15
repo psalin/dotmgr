@@ -37,7 +37,6 @@ parameter_help=false
 parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
-parameter_verbose=false
 parameter_scripts=()
 
 # Log output handling from installation script of Nord theme
@@ -106,11 +105,7 @@ function create_log_file() {
 }
 
 function run_cmd() {
-    if [ "${parameter_verbose}" = false ]; then
-        "$@" &>> "${log_file}"
-    else
-        "$@" | tee -a "${log_file}"
-    fi
+    "$@" &>> "${log_file}"
 }
 
 function install_dotfiles() {
@@ -357,10 +352,6 @@ while (( "$#" )); do
         --script | -s)
             parameter_scripts+=("$2")
             shift 2
-            ;;
-        --verbose | -v)
-            parameter_verbose=true
-            shift
             ;;
         --help | -h)
             parameter_help=true
