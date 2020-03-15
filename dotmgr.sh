@@ -260,30 +260,24 @@ function install_main() {
         exit 0
     fi
     if [ "${parameter_dotfiles}" = true ]; then
-        echo
-        echo "Installing dotfiles as symlinks"
+        __log_info "Installing dotfiles as symlinks"
         install_dotfiles "${dotfiles_list[@]}"
     fi
 
     if [ "${parameter_basic_packages}" = true ]; then
-        echo
-        echo "Installing basic packages"
+        __log_info "Installing basic packages"
         install_packages "${basic_packages_list[@]}" || __summary_error 1
     fi
 
     if [ "${parameter_packages}" = true ]; then
-        echo
-        echo "Installing aditional packages"
+        __log_info "Installing additional packages"
         install_packages "${aditional_packages_list[@]}" || __summary_error 1
     fi
 
     if [ ${#parameter_scripts[@]} -ne 0 ]; then
-        echo
-        echo "Running scripts"
+        __log_info "Running scripts"
         run_scripts "${parameter_scripts[@]}"
     fi
-
-    echo
 }
 
 function show_help() {
@@ -343,7 +337,7 @@ while (( "$#" )); do
             shift
             ;;
         *)
-            echo "Error: Unsupported parameter $1" >&2
+            __log_error "Unsupported parameter $1" >&2
             exit 1
             ;;
     esac
