@@ -240,9 +240,10 @@ function run_scripts() {
 
         pushd "$PWD" > /dev/null
 
+        __log_info "Running script: ${script}"
         # shellcheck source=/dev/null
         source "${script_path}"
-        __log_success "${script}: Script was executed"
+        __log_success "Script executed: ${script}"
 
         popd > /dev/null  # Make sure we are always at the working dir after script execution
     done
