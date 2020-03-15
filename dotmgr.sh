@@ -13,6 +13,7 @@ basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 dotfiles_dir="${basedir}/../dotfiles"
 script_dir="${basedir}/../scripts"
 script_help_cmd="${script_dir}/help.sh"
+log_file="${basedir}/../log/dotmgr.log"
 
 # dotfiles_list keeps the list of dotfiles with the next format:
 #   "origin_dotfile destination_of_dotfile"
@@ -70,19 +71,19 @@ __cleanup() {
 }
 
 __log_error() {
-  printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __log_success() {
-  printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __log_warning() {
-  printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __log_info() {
-  printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n"
+  printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __summary_success() {
@@ -93,16 +94,22 @@ __summary_success() {
 
 __summary_error() {
   __log_error "An error occurred during the installation!"
+  __log_error "Log file: ${log_file}"
   __log_error "Exit code: $1"
   __cleanup
   exit 1
 }
 
+function create_log_file() {
+    mkdir -p "${log_file%/*}"
+    : > "${log_file}"
+}
+
 function run_cmd() {
     if [ "${parameter_verbose}" = false ]; then
-        "$@" &> /dev/null
+        "$@" &>> "${log_file}"
     else
-        "$@"
+        "$@" | tee -a "${log_file}"
     fi
 }
 
@@ -225,13 +232,14 @@ function read_conffile() {
     local conffile="$1"
 
     if [ ! -f "${conffile}" ]; then
-        __log_error "Configuration file not found: ${conffile}"
+        __log_error "Configuration file not found: ${conffile}" 2> /dev/null
         __summary_error 1
     fi
 
     # shellcheck source=/dev/null
     source "${conffile}"
     cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
+    create_log_file               # the log file location is in the conffile
     __log_success "Found configuration file: ${conffile}\n"
 }
 
@@ -359,7 +367,7 @@ while (( "$#" )); do
             shift
             ;;
         *)
-            __log_error "Unsupported parameter $1" >&2
+            __log_error "Unsupported parameter $1" 2> /dev/null
             exit 1
             ;;
     esac
