@@ -23,6 +23,10 @@ basic_packages_list=(
 # path or a path relative to this configuration file
 script_dir=../scripts
 
+# log_file specifies the file to where the log is written, either an
+# absoulute path or a path relative to this configuration file
+log_file=../log/dotmgr.log
+
 # script_help_cmd contains the path to the script can be run to
 # insert info about available scripts to the help output
 script_help_cmd="${script_dir}/help.sh"
