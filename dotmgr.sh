@@ -192,23 +192,24 @@ function install_packages() {
             __log_warning "Could not install packages, no sudo rights"
             return 1
         fi
+    else
+        __log_success "All packages are already installed"
+        return 0
     fi
 
-    if [ ${#packages_not_installed[@]} -ne 0 ]; then
-        echo
-        echo "Installing following packages: ${packages_not_installed[*]}"
-        sudo apt-get update
-        echo
-        sudo apt-get install -y "${packages_not_installed[@]}"
-        echo
-        echo "Checking packages"
-        for package in "${packages[@]}"; do
-            if ! check_package "${package}"; then
-                __log_error "${package}: not installed"
-                return 1
-            fi
-        done
-    fi
+    echo
+    echo "Installing following packages: ${packages_not_installed[*]}"
+    sudo apt-get update
+    echo
+    sudo apt-get install -y "${packages_not_installed[@]}"
+    echo
+    echo "Checking packages"
+    for package in "${packages[@]}"; do
+        if ! check_package "${package}"; then
+            __log_error "${package}: not installed"
+            return 1
+        fi
+    done
     return 0
 }
 
