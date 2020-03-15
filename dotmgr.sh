@@ -36,6 +36,7 @@ parameter_help=false
 parameter_dotfiles=false
 parameter_basic_packages=false
 parameter_packages=false
+parameter_verbose=false
 parameter_scripts=()
 
 # Log output handling from installation script of Nord theme
@@ -97,6 +98,14 @@ __summary_error() {
   exit 1
 }
 
+function run_cmd() {
+    if [ "${parameter_verbose}" = false ]; then
+        "$@" &> /dev/null
+    else
+        "$@"
+    fi
+}
+
 function install_dotfiles() {
     local dotfiles=("$@")
     local origin_file
@@ -140,25 +149,25 @@ function symlink_file() {
 
     dir="${destination_file%${destination_file##*/}}"
     if [ ! -d "${dir}" ]; then
-        if ! mkdir -p "${dir}" &> /dev/null; then
+        if ! run_cmd mkdir -p "${dir}"; then
             __log_error "${filename}: Cannot create destination directory"
             __summary_error 1
         fi
     fi
 
     if [ -h "${destination_file}" ]; then
-        if ! rm "${destination_file}" &> /dev/null; then
+        if ! run_cmd rm "${destination_file}"; then
             __log_error "${filename}: Cannot remove the old symlink"
             __summary_error 1
         fi
     elif [ -f "${destination_file}" ]; then
-        if ! mv "${destination_file}" "${destination_file}_${date_of_backup}.bak" &> /dev/null; then
+        if ! run_cmd mv "${destination_file}" "${destination_file}_${date_of_backup}.bak"; then
             __log_error "${filename}: Cannot create backup from original file"
             __summary_error 1
         fi
     fi
 
-    if ! ln -s "${origin_file}" "${destination_file}" &> /dev/null; then
+    if ! run_cmd ln -s "${origin_file}" "${destination_file}"; then
         __log_error "${filename}: Cannot create symlink"
         __summary_error 1
     fi
@@ -168,7 +177,7 @@ function symlink_file() {
 
 function check_package() {
     local package="$1"
-    if ! dpkg-query -W --showformat='${Status}\n' "${package}" | grep -q "install ok installed"; then
+    if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null | grep -q "install ok installed"; then
         return 1
     fi
 
@@ -188,7 +197,7 @@ function install_packages() {
     done
 
     if [ ${#packages_not_installed[@]} -ne 0 ]; then
-        if ! sudo -v; then
+        if ! run_cmd sudo -v; then
             __log_warning "Could not install packages, no sudo rights"
             return 1
         fi
@@ -198,8 +207,8 @@ function install_packages() {
     fi
 
     __log_info "Installing packages: ${packages_not_installed[*]}"
-    sudo apt-get update
-    if ! sudo apt-get install -y "${packages_not_installed[@]}"; then
+    run_cmd sudo apt-get update
+    if ! run_cmd sudo apt-get install -y "${packages_not_installed[@]}"; then
         for package in "${packages[@]}"; do
             if ! check_package "${package}"; then
                 __log_error "${package}: not installed"
@@ -340,6 +349,10 @@ while (( "$#" )); do
         --script | -s)
             parameter_scripts+=("$2")
             shift 2
+            ;;
+        --verbose | -v)
+            parameter_verbose=true
+            shift
             ;;
         --help | -h)
             parameter_help=true
