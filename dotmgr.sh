@@ -182,9 +182,9 @@ function install_packages() {
         if ! check_package "${package}"; then
             __log_info "${package}: Not installed"
             packages_not_installed+=("${package}")
-            continue
+        else
+            __log_info "${package}: Already installed"
         fi
-        __log_success "${package}: Installed"
     done
 
     if [ ${#packages_not_installed[@]} -ne 0 ]; then
