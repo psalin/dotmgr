@@ -223,7 +223,7 @@ function read_conffile() {
     # shellcheck source=/dev/null
     source "${conffile}"
     cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
-    __log_success "Found configuration file: ${conffile}"
+    __log_success "Found configuration file: ${conffile}\n"
 }
 
 function run_scripts() {
@@ -243,9 +243,9 @@ function run_scripts() {
         __log_info "Running script: ${script}"
         # shellcheck source=/dev/null
         if source "${script_path}"; then
-            __log_success "Script executed: ${script}"
+            __log_success "Script executed: ${script}\n"
         else
-            __log_error "Script executed with errors: ${script}"
+            __log_error "Script executed with errors: ${script}\n"
             __summary_error 1
         fi
 
@@ -267,25 +267,25 @@ function install_main() {
     if [ "${parameter_dotfiles}" = true ]; then
         __log_info "Installing dotfiles as symlinks"
         install_dotfiles "${dotfiles_list[@]}"
-        __log_success "Finished installing dotfiles"
+        __log_success "Finished installing dotfiles\n"
     fi
 
     if [ "${parameter_basic_packages}" = true ]; then
         __log_info "Installing basic packages"
         install_packages "${basic_packages_list[@]}" || __summary_error 1
-        __log_success "Finished installing basic packages"
+        __log_success "Finished installing basic packages\n"
     fi
 
     if [ "${parameter_packages}" = true ]; then
         __log_info "Installing additional packages"
         install_packages "${aditional_packages_list[@]}" || __summary_error 1
-        __log_success "Finished installing additional packages"
+        __log_success "Finished installing additional packages\n"
     fi
 
     if [ ${#parameter_scripts[@]} -ne 0 ]; then
         __log_info "Running scripts"
         run_scripts "${parameter_scripts[@]}"
-        __log_success "Finished running scripts"
+        __log_success "Finished running scripts\n"
     fi
 }
 
