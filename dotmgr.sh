@@ -197,13 +197,9 @@ function install_packages() {
         return 0
     fi
 
-    echo
-    echo "Installing following packages: ${packages_not_installed[*]}"
+    __log_info "Installing packages: ${packages_not_installed[*]}"
     sudo apt-get update
-    echo
     sudo apt-get install -y "${packages_not_installed[@]}"
-    echo
-    echo "Checking packages"
     for package in "${packages[@]}"; do
         if ! check_package "${package}"; then
             __log_error "${package}: not installed"
