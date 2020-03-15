@@ -198,10 +198,11 @@ function install_packages() {
         for package in "${packages[@]}"; do
             if ! check_package "${package}"; then
                 __log_error "${package}: not installed"
-                __summary_error 1
+                return 1
             fi
         done
     fi
+    return 0
 }
 
 function read_conffile() {
@@ -260,13 +261,13 @@ function install_main() {
     if [ "${parameter_basic_packages}" = true ]; then
         echo
         echo "Installing basic packages"
-        install_packages "${basic_packages_list[@]}"
+        install_packages "${basic_packages_list[@]}" || __summary_error 1
     fi
 
     if [ "${parameter_packages}" = true ]; then
         echo
         echo "Installing aditional packages"
-        install_packages "${aditional_packages_list[@]}"
+        install_packages "${aditional_packages_list[@]}" || __summary_error 1
     fi
 
     if [ ${#parameter_scripts[@]} -ne 0 ]; then
