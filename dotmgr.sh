@@ -208,6 +208,7 @@ function install_packages() {
         return 1
     fi
 
+    __log_success "Packages successfully installed"
     return 0
 }
 
