@@ -263,21 +263,25 @@ function install_main() {
     if [ "${parameter_dotfiles}" = true ]; then
         __log_info "Installing dotfiles as symlinks"
         install_dotfiles "${dotfiles_list[@]}"
+        __log_success "Finished installing dotfiles"
     fi
 
     if [ "${parameter_basic_packages}" = true ]; then
         __log_info "Installing basic packages"
         install_packages "${basic_packages_list[@]}" || __summary_error 1
+        __log_success "Finished installing basic packages"
     fi
 
     if [ "${parameter_packages}" = true ]; then
         __log_info "Installing additional packages"
         install_packages "${aditional_packages_list[@]}" || __summary_error 1
+        __log_success "Finished installing additional packages"
     fi
 
     if [ ${#parameter_scripts[@]} -ne 0 ]; then
         __log_info "Running scripts"
         run_scripts "${parameter_scripts[@]}"
+        __log_success "Finished running scripts"
     fi
 }
 
