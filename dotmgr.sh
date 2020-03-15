@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-# TODO:
-#   - dry run option
-
-
 basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
 # Disable unused warning because scripts might use this
@@ -35,6 +31,7 @@ packages_not_installed=()
 parameter_conffile="${basedir}/../dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
 parameter_help=false
 parameter_dotfiles=false
+parameter_dry_run=false
 parameter_basic_packages=false
 parameter_packages=false
 parameter_scripts=()
@@ -105,7 +102,11 @@ function create_log_file() {
 }
 
 function run_cmd() {
-    "$@" &>> "${log_file}"
+    if [ "${parameter_dry_run}" = true ]; then
+        __log_info "DRY RUN: $*"
+    else
+        "$@" &>> "${log_file}"
+    fi
 }
 
 function install_dotfiles() {
@@ -250,6 +251,11 @@ function run_scripts() {
             fi
         fi
 
+        if [ "${parameter_dry_run}" = true ]; then
+            __log_info "DRY RUN: Not executing script: ${script}"
+            continue
+        fi
+
         pushd "$PWD" > /dev/null
 
         __log_info "Running script: ${script}"
@@ -311,6 +317,7 @@ If no argument is indicated, the script will not perform any action.
 List of arguments:
   -c, --conffile conffile   Path to the configuration file to use
   -d, --dotfiles            Install the dotfiles
+      --dry-run             Simulation only, don't run any commands or scripts
   -p, --basic-packages      Install basic packages
   -P, --packages PKG        Install a package
   -s, --script SCRIPTNAME   Execute script SCRIPTNAME
@@ -338,6 +345,10 @@ while (( "$#" )); do
             ;;
         --dotfiles | -d)
             parameter_dotfiles=true
+            shift
+            ;;
+        --dry-run)
+            parameter_dry_run=true
             shift
             ;;
         --basic-packages | -p)
