@@ -199,13 +199,15 @@ function install_packages() {
 
     __log_info "Installing packages: ${packages_not_installed[*]}"
     sudo apt-get update
-    sudo apt-get install -y "${packages_not_installed[@]}"
-    for package in "${packages[@]}"; do
-        if ! check_package "${package}"; then
-            __log_error "${package}: not installed"
-            return 1
-        fi
-    done
+    if ! sudo apt-get install -y "${packages_not_installed[@]}"; then
+        for package in "${packages[@]}"; do
+            if ! check_package "${package}"; then
+                __log_error "${package}: not installed"
+            fi
+        done
+        return 1
+    fi
+
     return 0
 }
 
