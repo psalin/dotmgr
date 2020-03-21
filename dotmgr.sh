@@ -233,34 +233,43 @@ function read_conffile() {
 
 function run_scripts() {
     local scripts=("$@")
-    local script_path
 
     for script in "${scripts[@]}"; do
-        if ! script_path=$(realpath -e "${script_dir}/${script}" 2> /dev/null); then
-            if ! script_path=$(realpath -e "${script_dir}/${script}.sh" 2> /dev/null); then
-                __log_warning "${script_dir}/${script}: Script does not exist"
-                continue
-            fi
-        fi
-
-        if [ "${parameter_dry_run}" = true ]; then
-            __log_info "DRY RUN: Not executing script: ${script}"
-            continue
-        fi
-
-        pushd "$PWD" > /dev/null
-
-        __log_info "Running script: ${script}"
-        # shellcheck source=/dev/null
-        if source "${script_path}"; then
-            __log_success "Script executed: ${script}\n"
-        else
-            __log_error "Script executed with errors: ${script}\n"
+        if ! run_script "${script}"; then
             __summary_error 1
         fi
-
-        popd > /dev/null  # Make sure we are always at the working dir after script execution
     done
+}
+
+function run_script() {
+    local script="$1"
+    local script_path
+
+    if ! script_path=$(realpath -e "${script_dir}/${script}" 2> /dev/null); then
+        if ! script_path=$(realpath -e "${script_dir}/${script}.sh" 2> /dev/null); then
+            __log_warning "${script_dir}/${script}: Script does not exist"
+            return 1
+        fi
+    fi
+
+    if [ "${parameter_dry_run}" = true ]; then
+        __log_info "DRY RUN: Not executing script: ${script}"
+        return 0
+    fi
+
+    pushd "$PWD" > /dev/null
+
+    __log_info "Running script: ${script}"
+    # shellcheck source=/dev/null
+    if source "${script_path}"; then
+        __log_success "Script executed: ${script}\n"
+        popd > /dev/null  # Make sure we are always at the original dir after script execution
+        return 0
+    else
+        __log_error "Script executed with errors: ${script}\n"
+        popd > /dev/null  # Make sure we are always at the original dir after script execution
+        return 1
+    fi
 }
 
 function install_main() {
