@@ -12,13 +12,6 @@ dotfiles_list=(
     "${dotfiles_dir} ${HOME}"
 )
 
-# basic_packages_list defines the packages to be installed when
-# the --basic-packages option is given
-basic_packages_list=(
-    curl
-    git
-)
-
 # script_dir specifies the directory of scripts, either an absolute
 # path or a path relative to this configuration file
 script_dir=../scripts

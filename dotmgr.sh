@@ -20,19 +20,11 @@ log_file="${basedir}/../log/dotmgr.log"
 dotfiles_list=(
 )
 
-# basic_packages_list defines the packages to be installed when
-# the --basic-packages option is given
-basic_packages_list=(
-)
-
-packages_not_installed=()
-
 # Variables to hold calling options
 parameter_conffile="${basedir}/../dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
 parameter_help=false
 parameter_dotfiles=false
 parameter_dry_run=false
-parameter_basic_packages=false
 parameter_packages=false
 parameter_scripts=()
 
@@ -277,7 +269,7 @@ function install_main() {
     fi
 
     if [ "${parameter_help}" = true ] ||
-       { [ "${parameter_dotfiles}" = false ] && [ "${parameter_basic_packages}" = false ] &&
+       { [ "${parameter_dotfiles}" = false ] &&
        [ "${parameter_packages}" = false ] && [ ${#parameter_scripts[@]} -eq 0 ]; }; then
         show_help
         exit 0
@@ -286,12 +278,6 @@ function install_main() {
         __log_info "Installing dotfiles as symlinks"
         install_dotfiles "${dotfiles_list[@]}"
         __log_success "Finished installing dotfiles\n"
-    fi
-
-    if [ "${parameter_basic_packages}" = true ]; then
-        __log_info "Installing basic packages"
-        install_packages "${basic_packages_list[@]}" || __summary_error 1
-        __log_success "Finished installing basic packages\n"
     fi
 
     if [ "${parameter_packages}" = true ]; then
@@ -318,7 +304,6 @@ List of arguments:
   -c, --conffile conffile   Path to the configuration file to use
   -d, --dotfiles            Install the dotfiles
       --dry-run             Simulation only, don't run any commands or scripts
-  -p, --basic-packages      Install basic packages
   -P, --packages PKG        Install a package
   -s, --script SCRIPTNAME   Execute script SCRIPTNAME
   -h, --help                Show this help.
@@ -349,10 +334,6 @@ while (( "$#" )); do
             ;;
         --dry-run)
             parameter_dry_run=true
-            shift
-            ;;
-        --basic-packages | -p)
-            parameter_basic_packages=true
             shift
             ;;
         --packages | -P)
