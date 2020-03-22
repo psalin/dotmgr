@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Don't allow sourcing this script
-(return 0 2>/dev/null) && echo "ERROR: ${BASH_SOURCE[0]##*/} must not be sourced!" && return 1
+(return 0 2>/dev/null) && echo "ERROR: ${BASH_SOURCE[0]##*/} must not be sourced!" >&2 && return 1
 
 set -euo pipefail
 
@@ -39,10 +39,9 @@ _ctb_success="\e[1;32m"
 _ctb_warning="\e[1;33m"
 _ctb="\e[1;37m"
 _c_reset="\e[0m"
-_ctb_reset="\e[0m"
 
 __log_error() {
-  printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+  printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
 }
 
 __log_success() {
@@ -201,7 +200,7 @@ function read_conffile() {
     local conffile="$1"
 
     if [ ! -f "${conffile}" ]; then
-        __log_error "Configuration file not found: ${conffile}" 2> /dev/null
+        __log_error "Configuration file not found: ${conffile}"
         __summary_error 1
     fi
 
@@ -305,7 +304,7 @@ EOF
 }
 
 #################################################################################
-trap 'printf "\n${_ctb_error}User aborted.${_ctb_reset}\n" && exit 1' SIGINT SIGTERM
+trap '__log_error "User aborted." && exit 1' SIGINT SIGTERM
 
 if [ "$#" == 0 ]; then
     show_help
@@ -340,7 +339,7 @@ while (( "$#" )); do
             shift
             ;;
         *)
-            __log_error "Unsupported parameter $1" 2> /dev/null
+            __log_error "Unsupported parameter $1"
             exit 1
             ;;
     esac
