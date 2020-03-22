@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Don't allow sourcing this script
+(return 0 2>/dev/null) && echo "ERROR: ${BASH_SOURCE[0]##*/} must not be sourced!" && return 1
+
 set -euo pipefail
 
 basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
