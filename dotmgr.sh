@@ -43,31 +43,31 @@ _ctb="\e[1;37m"
 _c_reset="\e[0m"
 
 __log_error() {
-  printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
+    printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
 }
 
 __log_success() {
-  printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+    printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __log_warning() {
-  printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+    printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __log_info() {
-  printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+    printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
 }
 
 __summary_success() {
-  __log_success "Local installation completed"
-  exit 0
+    __log_success "Local installation completed"
+    exit 0
 }
 
 __summary_error() {
-  __log_error "An error occurred during the installation!"
-  __log_error "Log file: ${log_file}"
-  __log_error "Exit code: $1"
-  exit 1
+    __log_error "An error occurred during the installation!"
+    __log_error "Log file: ${log_file}"
+    __log_error "Exit code: $1"
+    exit 1
 }
 
 function create_log_file() {
@@ -260,8 +260,8 @@ function install_main() {
     fi
 
     if [ "${parameter_help}" = true ] ||
-       { [ "${parameter_dotfiles}" = false ] &&
-       [ "${parameter_packages}" = false ] && [ ${#parameter_scripts[@]} -eq 0 ]; }; then
+           { [ "${parameter_dotfiles}" = false ] &&
+                 [ "${parameter_packages}" = false ] && [ ${#parameter_scripts[@]} -eq 0 ]; }; then
         show_help
         exit 0
     fi
