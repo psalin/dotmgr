@@ -26,7 +26,7 @@ dotfiles_list=(
 )
 
 # Variables to hold calling options
-parameter_conffile="${basedir}/../dotfiles.conf" # Set default to empty to disable the conffile and conf inline in this script
+parameter_conffile="${basedir}/../dotfiles.conf" # Set to empty to disable file and use inline conf
 parameter_help=false
 parameter_dotfiles=false
 parameter_dry_run=false
@@ -154,7 +154,8 @@ function symlink_file() {
 
 function check_package() {
     local package="$1"
-    if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null | grep -q "install ok installed"; then
+    if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null \
+            | grep -q "install ok installed"; then
         return 1
     fi
 
