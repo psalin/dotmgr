@@ -260,9 +260,10 @@ function install_main() {
         read_conffile "${parameter_conffile}"
     fi
 
-    if [ "${parameter_help}" = true ] ||
-           { [ "${parameter_dotfiles}" = false ] &&
-                 [ "${parameter_packages}" = false ] && [ ${#parameter_scripts[@]} -eq 0 ]; }; then
+    if [ "${parameter_help}" = true ] \
+           || { [ "${parameter_dotfiles}" = false ] \
+                    && [ "${parameter_packages}" = false ] \
+                    && [ ${#parameter_scripts[@]} -eq 0 ]; }; then
         show_help
         exit 0
     fi
