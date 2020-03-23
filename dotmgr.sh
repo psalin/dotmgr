@@ -89,9 +89,9 @@ function install_dotfiles() {
     local destination_file
     local filename
 
-    for i in ${!dotfiles[*]}; do
-        origin_file=$(realpath -sm "$(echo "${dotfiles[$i]}" | cut -d " " -f1)")
-        destination_file=$(realpath -sm "$(echo "${dotfiles[$i]}" | cut -d " " -f2)")
+    for dotfile in "${dotfiles[@]}"; do
+        origin_file=$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f1)")
+        destination_file=$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f2)")
         filename=$(basename "${origin_file}")
 
         if [ -f "${origin_file}" ]; then
