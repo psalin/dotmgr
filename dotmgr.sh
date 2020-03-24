@@ -76,7 +76,7 @@ function create_log_file() {
 }
 
 function run_cmd() {
-    if [ "${parameter_dry_run}" = true ]; then
+    if [[ "${parameter_dry_run}" == true ]]; then
         __log_info "DRY RUN: $*"
     else
         "$@" &>> "${log_file}"
@@ -94,10 +94,10 @@ function install_dotfiles() {
         destination_file="$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f2)")"
         filename="$(basename "${origin_file}")"
 
-        if [ -f "${origin_file}" ]; then
+        if [[ -f "${origin_file}" ]]; then
             symlink_file "${origin_file}" "${destination_file}"
 
-        elif [ -d "${origin_file}" ]; then
+        elif [[ -d "${origin_file}" ]]; then
             symlink_files_in_dirtree "${origin_file}" "${destination_file}"
 
         else
@@ -125,19 +125,19 @@ function symlink_file() {
     filename="$(basename "${origin_file}")"
 
     dir="${destination_file%${destination_file##*/}}"
-    if [ ! -d "${dir}" ]; then
+    if [[ ! -d "${dir}" ]]; then
         if ! run_cmd mkdir -p "${dir}"; then
             __log_error "${filename}: Cannot create destination directory"
             __summary_error 1
         fi
     fi
 
-    if [ -h "${destination_file}" ]; then
+    if [[ -h "${destination_file}" ]]; then
         if ! run_cmd rm "${destination_file}"; then
             __log_error "${filename}: Cannot remove the old symlink"
             __summary_error 1
         fi
-    elif [ -f "${destination_file}" ]; then
+    elif [[ -f "${destination_file}" ]]; then
         if ! run_cmd mv "${destination_file}" "${destination_file}_${date_of_backup}.bak"; then
             __log_error "${filename}: Cannot create backup from original file"
             __summary_error 1
@@ -174,7 +174,7 @@ function install_packages() {
         fi
     done
 
-    if [ ${#packages_not_installed[@]} -ne 0 ]; then
+    if [[ ${#packages_not_installed[@]} -ne 0 ]]; then
         if ! run_cmd sudo -v; then
             __log_warning "Could not install packages, no sudo rights"
             return 1
@@ -202,7 +202,7 @@ function install_packages() {
 function read_conffile() {
     local conffile="$1"
 
-    if [ ! -f "${conffile}" ]; then
+    if [[ ! -f "${conffile}" ]]; then
         __log_error "Configuration file not found: ${conffile}"
         __summary_error 1
     fi
@@ -235,7 +235,7 @@ function run_script() {
         fi
     fi
 
-    if [ "${parameter_dry_run}" = true ]; then
+    if [[ "${parameter_dry_run}" == true ]]; then
         __log_info "DRY RUN: Not executing script: ${script}"
         return 0
     fi
@@ -256,30 +256,30 @@ function run_script() {
 }
 
 function install_main() {
-    if [ -n "${parameter_conffile}" ]; then
+    if [[ -n "${parameter_conffile}" ]]; then
         read_conffile "${parameter_conffile}"
     fi
 
-    if [ "${parameter_help}" = true ] \
-           || { [ "${parameter_dotfiles}" = false ] \
-                    && [ "${parameter_packages}" = false ] \
-                    && [ ${#parameter_scripts[@]} -eq 0 ]; }; then
+    if [[ "${parameter_help}" == true \
+              || ("${parameter_dotfiles}" == false \
+                      && "${parameter_packages}" == false \
+                      && ${#parameter_scripts[@]} -eq 0) ]]; then
         show_help
         exit 0
     fi
-    if [ "${parameter_dotfiles}" = true ]; then
+    if [[ "${parameter_dotfiles}" == true ]]; then
         __log_info "Installing dotfiles as symlinks"
         install_dotfiles "${dotfiles_list[@]}"
         __log_success "Finished installing dotfiles\n"
     fi
 
-    if [ "${parameter_packages}" = true ]; then
+    if [[ "${parameter_packages}" == true ]]; then
         __log_info "Installing additional packages"
         install_packages "${aditional_packages_list[@]}" || __summary_error 1
         __log_success "Finished installing additional packages\n"
     fi
 
-    if [ ${#parameter_scripts[@]} -ne 0 ]; then
+    if [[ ${#parameter_scripts[@]} -ne 0 ]]; then
         __log_info "Running scripts"
         run_scripts "${parameter_scripts[@]}"
         __log_success "Finished running scripts\n"
@@ -302,7 +302,7 @@ List of arguments:
   -h, --help                Show this help.
 EOF
 
-    if [ -f "${script_help_cmd}" ]; then
+    if [[ -f "${script_help_cmd}" ]]; then
         bash "${script_help_cmd}"
     fi
 }
@@ -310,7 +310,7 @@ EOF
 #################################################################################
 trap '__log_error "User aborted." && exit 1' SIGINT SIGTERM
 
-if [ "$#" == 0 ]; then
+if [[ "$#" -eq 0 ]]; then
     show_help
     exit 0
 fi
