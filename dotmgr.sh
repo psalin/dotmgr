@@ -90,9 +90,9 @@ function install_dotfiles() {
     local filename
 
     for dotfile in "${dotfiles[@]}"; do
-        origin_file=$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f1)")
-        destination_file=$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f2)")
-        filename=$(basename "${origin_file}")
+        origin_file="$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f1)")"
+        destination_file="$(realpath -sm "$(echo "${dotfile}" | cut -d " " -f2)")"
+        filename="$(basename "${origin_file}")"
 
         if [ -f "${origin_file}" ]; then
             symlink_file "${origin_file}" "${destination_file}"
@@ -122,7 +122,7 @@ function symlink_file() {
     local date_of_backup
     date_of_backup="$(date +%Y%m%d)"
     local filename
-    filename=$(basename "${origin_file}")
+    filename="$(basename "${origin_file}")"
 
     dir="${destination_file%${destination_file##*/}}"
     if [ ! -d "${dir}" ]; then
@@ -228,8 +228,8 @@ function run_script() {
     local script="$1"
     local script_path
 
-    if ! script_path=$(realpath -e "${script_dir}/${script}" 2> /dev/null); then
-        if ! script_path=$(realpath -e "${script_dir}/${script}.sh" 2> /dev/null); then
+    if ! script_path="$(realpath -e "${script_dir}/${script}" 2> /dev/null)"; then
+        if ! script_path="$(realpath -e "${script_dir}/${script}.sh" 2> /dev/null)"; then
             __log_warning "${script_dir}/${script}: Script does not exist"
             return 1
         fi
