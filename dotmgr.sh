@@ -342,4 +342,11 @@ while (( "$#" )); do
     esac
 done
 
+readonly parameter_conffile
+readonly parameter_help
+readonly parameter_dotfiles
+readonly parameter_dry_run
+readonly parameter_packages
+readonly parameter_scripts
+
 install_main
