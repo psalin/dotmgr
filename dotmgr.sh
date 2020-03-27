@@ -8,6 +8,7 @@
 set -euo pipefail
 
 basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+readonly basedir
 
 # Configuration file parameter defaults, see dotfiles.conf.example for descriptions
 dotfiles_dir="${basedir}/../dotfiles"
@@ -26,12 +27,12 @@ parameter_scripts=()
 
 # Log output handling originally from installation script of Nord theme
 # https://github.com/arcticicestudio/
-_ct="\e[0;37m"
-_ctb_error="\e[1;31m"
-_ctb_success="\e[1;32m"
-_ctb_warning="\e[1;33m"
-_ctb="\e[1;37m"
-_c_reset="\e[0m"
+readonly _ct="\e[0;37m"
+readonly _ctb_error="\e[1;31m"
+readonly _ctb_success="\e[1;32m"
+readonly _ctb_warning="\e[1;33m"
+readonly _ctb="\e[1;37m"
+readonly _c_reset="\e[0m"
 
 __log_error() {
     printf "%b" "${_ctb_error}[ERROR] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
