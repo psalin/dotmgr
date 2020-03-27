@@ -310,53 +310,56 @@ EOF
     fi
 }
 
+function parse_arguments() {
+    if [[ "$#" -eq 0 ]]; then
+        show_help
+        exit 0
+    fi
+
+    while (( "$#" )); do
+        case "$1" in
+            --conffile | -c)
+                parameter_conffile="$2"
+                shift 2
+                ;;
+            --dotfiles | -d)
+                parameter_dotfiles=true
+                shift
+                ;;
+            --dry-run)
+                parameter_dry_run=true
+                shift
+                ;;
+            --packages | -P)
+                parameter_packages=true
+                aditional_packages_list+=("$2")
+                shift 2
+                ;;
+            --script | -s)
+                parameter_scripts+=("$2")
+                shift 2
+                ;;
+            --help | -h)
+                parameter_help=true
+                shift
+                ;;
+            *)
+                __log_error "Unsupported parameter $1"
+                exit 1
+                ;;
+        esac
+    done
+
+    readonly parameter_conffile
+    readonly parameter_help
+    readonly parameter_dotfiles
+    readonly parameter_dry_run
+    readonly parameter_packages
+    readonly parameter_scripts
+}
+
 #################################################################################
 trap '__log_error "User aborted." && exit 1' SIGINT SIGTERM
 
-if [[ "$#" -eq 0 ]]; then
-    show_help
-    exit 0
-fi
-
-while (( "$#" )); do
-    case "$1" in
-        --conffile | -c)
-            parameter_conffile="$2"
-            shift 2
-            ;;
-        --dotfiles | -d)
-            parameter_dotfiles=true
-            shift
-            ;;
-        --dry-run)
-            parameter_dry_run=true
-            shift
-            ;;
-        --packages | -P)
-            parameter_packages=true
-            aditional_packages_list+=("$2")
-            shift 2
-            ;;
-        --script | -s)
-            parameter_scripts+=("$2")
-            shift 2
-            ;;
-        --help | -h)
-            parameter_help=true
-            shift
-            ;;
-        *)
-            __log_error "Unsupported parameter $1"
-            exit 1
-            ;;
-    esac
-done
-
-readonly parameter_conffile
-readonly parameter_help
-readonly parameter_dotfiles
-readonly parameter_dry_run
-readonly parameter_packages
-readonly parameter_scripts
-
+parse_arguments "$@"
 install_main
