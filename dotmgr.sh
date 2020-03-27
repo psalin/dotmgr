@@ -22,7 +22,7 @@ parameter_conffile="${basedir}/../dotfiles.conf" # Set to empty to disable file 
 parameter_help=false
 parameter_dotfiles=false
 parameter_dry_run=false
-parameter_packages=false
+parameter_packages=()
 parameter_scripts=()
 
 # Log output handling originally from installation script of Nord theme
@@ -265,7 +265,7 @@ function install_main() {
 
     if [[ "${parameter_help}" == true \
               || ("${parameter_dotfiles}" == false \
-                      && "${parameter_packages}" == false \
+                      && ${#parameter_packages[@]} -eq 0 \
                       && ${#parameter_scripts[@]} -eq 0) ]]; then
         show_help
         exit 0
@@ -276,10 +276,10 @@ function install_main() {
         __log_success "Finished installing dotfiles\n"
     fi
 
-    if [[ "${parameter_packages}" == true ]]; then
-        __log_info "Installing additional packages"
-        install_packages "${aditional_packages_list[@]}" || __summary_error 1
-        __log_success "Finished installing additional packages\n"
+    if [[ ${#parameter_packages[@]} -ne 0 ]]; then
+        __log_info "Installing packages"
+        install_packages "${parameter_packages[@]}" || __summary_error 1
+        __log_success "Finished installing packages\n"
     fi
 
     if [[ ${#parameter_scripts[@]} -ne 0 ]]; then
@@ -331,8 +331,7 @@ function parse_arguments() {
                 shift
                 ;;
             --packages | -P)
-                parameter_packages=true
-                aditional_packages_list+=("$2")
+                parameter_packages+=("$2")
                 shift 2
                 ;;
             --script | -s)
