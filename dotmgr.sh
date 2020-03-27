@@ -76,7 +76,7 @@ function run_cmd() {
 }
 
 function install_dotfiles() {
-    local dotfiles=("$@")
+    local -r dotfiles=("$@")
     local origin_file
     local destination_file
     local filename
@@ -100,8 +100,8 @@ function install_dotfiles() {
 }
 
 function symlink_files_in_dirtree() {
-    local origin_dir="$1"
-    local destination_dir="$2"
+    local -r origin_dir="$1"
+    local -r destination_dir="$2"
 
     while IFS= read -r -d '' file; do
         symlink_file "${file}" "${destination_dir}${file#${origin_dir}}"
@@ -109,12 +109,14 @@ function symlink_files_in_dirtree() {
 }
 
 function symlink_file() {
-    local origin_file="$1"
-    local destination_file="$2"
+    local -r origin_file="$1"
+    local -r destination_file="$2"
     local date_of_backup
-    date_of_backup="$(date +%Y%m%d)"
     local filename
+    date_of_backup="$(date +%Y%m%d)"
     filename="$(basename "${origin_file}")"
+    readonly date_of_backup
+    readonly filename
 
     dir="${destination_file%${destination_file##*/}}"
     if [[ ! -d "${dir}" ]]; then
@@ -145,7 +147,7 @@ function symlink_file() {
 }
 
 function check_package() {
-    local package="$1"
+    local -r package="$1"
     if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null \
             | grep -q "install ok installed"; then
         return 1
@@ -155,8 +157,9 @@ function check_package() {
 }
 
 function install_packages() {
-    local packages=("$@")
+    local -r packages=("$@")
     local packages_not_installed=()
+
     for package in "${packages[@]}"; do
         if ! check_package "${package}"; then
             __log_info "${package}: Not installed"
@@ -192,7 +195,7 @@ function install_packages() {
 }
 
 function read_conffile() {
-    local conffile="$1"
+    local -r conffile="$1"
 
     if [[ ! -f "${conffile}" ]]; then
         __log_error "Configuration file not found: ${conffile}"
@@ -207,7 +210,7 @@ function read_conffile() {
 }
 
 function run_scripts() {
-    local scripts=("$@")
+    local -r scripts=("$@")
 
     for script in "${scripts[@]}"; do
         if ! run_script "${script}"; then
@@ -217,7 +220,7 @@ function run_scripts() {
 }
 
 function run_script() {
-    local script="$1"
+    local -r script="$1"
     local script_path
 
     if ! script_path="$(realpath -e "${script_dir}/${script}" 2> /dev/null)"; then
