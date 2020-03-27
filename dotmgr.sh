@@ -10,8 +10,6 @@ set -euo pipefail
 basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
 # Configuration file parameter defaults, see dotfiles.conf.example for descriptions
-# Disable unused warning because scripts might use this
-# shellcheck disable=SC2034
 dotfiles_dir="${basedir}/../dotfiles"
 dotfiles_list=()
 script_dir="${basedir}/../scripts"
@@ -252,6 +250,14 @@ function install_main() {
     if [[ -n "${parameter_conffile}" ]]; then
         read_conffile "${parameter_conffile}"
     fi
+
+    # Prevent conf param changes after initialization
+    # shellcheck disable=SC2034
+    readonly dotfiles_dir     # Disable unused warning because scripts might use this
+    readonly dotfiles_list
+    readonly script_dir
+    readonly log_file
+    readonly script_help_cmd
 
     if [[ "${parameter_help}" == true \
               || ("${parameter_dotfiles}" == false \
