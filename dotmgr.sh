@@ -111,6 +111,7 @@ function symlink_files_in_dirtree() {
 function symlink_file() {
     local -r origin_file="$1"
     local -r destination_file="$2"
+    local dir="${destination_file%${destination_file##*/}}"
     local date_of_backup
     local filename
     date_of_backup="$(date +%Y%m%d)"
@@ -118,7 +119,6 @@ function symlink_file() {
     readonly date_of_backup
     readonly filename
 
-    dir="${destination_file%${destination_file##*/}}"
     if [[ ! -d "${dir}" ]]; then
         if ! run_cmd mkdir -p "${dir}"; then
             __log_error "${filename}: Cannot create destination directory"
