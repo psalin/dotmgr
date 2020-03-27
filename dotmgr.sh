@@ -358,8 +358,12 @@ function parse_arguments() {
     readonly parameter_scripts
 }
 
+function main() {
+    parse_arguments "$@"
+    install_main
+}
+
 #################################################################################
 trap '__log_error "User aborted." && exit 1' SIGINT SIGTERM
 
-parse_arguments "$@"
-install_main
+main "$@"
