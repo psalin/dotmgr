@@ -9,21 +9,14 @@ set -euo pipefail
 
 basedir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
+# Configuration file parameter defaults, see dotfiles.conf.example for descriptions
 # Disable unused warning because scripts might use this
 # shellcheck disable=SC2034
 dotfiles_dir="${basedir}/../dotfiles"
+dotfiles_list=()
 script_dir="${basedir}/../scripts"
-script_help_cmd="${script_dir}/help.sh"
 log_file="${basedir}/../log/dotmgr.log"
-
-# dotfiles_list keeps the list of dotfiles with the next format:
-#   "origin_dotfile destination_of_dotfile"
-#
-# - if the origin_dotfile is a file, it is symlinked from the destination.
-# - if the origin_dotfile is a directory, all files under it are symlinked
-#   from the same directory structure under the destination directory
-dotfiles_list=(
-)
+script_help_cmd="${script_dir}/help.sh"
 
 # Variables to hold calling options
 parameter_conffile="${basedir}/../dotfiles.conf" # Set to empty to disable file and use inline conf
