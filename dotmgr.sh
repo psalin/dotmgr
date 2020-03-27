@@ -111,9 +111,9 @@ function symlink_files_in_dirtree() {
     local origin_dir="$1"
     local destination_dir="$2"
 
-    find "${origin_dir}" -type f -print0 | while IFS= read -r -d '' file; do
+    while IFS= read -r -d '' file; do
         symlink_file "${file}" "${destination_dir}${file#${origin_dir}}"
-    done
+    done < <(find "${origin_dir}" -type f -print0)
 }
 
 function symlink_file() {
