@@ -63,7 +63,11 @@ __summary_error() {
 }
 
 function create_log_file() {
-    mkdir -p "${log_file%/*}"
+    if ! mkdir -p "${log_file%/*}"; then
+        __log_error "${log_file}: Cannot create log file directory"
+        __summary_error 1
+    fi
+    
     : > "${log_file}"
 }
 
