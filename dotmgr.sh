@@ -62,6 +62,14 @@ __summary_error() {
     exit 1
 }
 
+function run_cmd() {
+    if [[ "${parameter_dry_run}" == true ]]; then
+        __log_info "DRY RUN: $*"
+    else
+        "$@" &>> "${log_file}"
+    fi
+}
+
 function read_conffile() {
     local -r conffile="$1"
 
@@ -84,14 +92,6 @@ function create_log_file() {
     fi
     
     : > "${log_file}"
-}
-
-function run_cmd() {
-    if [[ "${parameter_dry_run}" == true ]]; then
-        __log_info "DRY RUN: $*"
-    else
-        "$@" &>> "${log_file}"
-    fi
 }
 
 function install_dotfiles() {
