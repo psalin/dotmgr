@@ -62,6 +62,21 @@ __summary_error() {
     exit 1
 }
 
+function read_conffile() {
+    local -r conffile="$1"
+
+    if [[ ! -f "${conffile}" ]]; then
+        __log_error "Configuration file not found: ${conffile}"
+        __summary_error 1
+    fi
+
+    # shellcheck source=/dev/null
+    source "${conffile}"
+    cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
+    create_log_file               # the log file location is in the conffile
+    __log_success "Found configuration file: ${conffile}\n"
+}
+
 function create_log_file() {
     if ! mkdir -p "${log_file%/*}"; then
         __log_error "${log_file}: Cannot create log file directory"
@@ -196,21 +211,6 @@ function install_packages() {
 
     __log_success "Packages successfully installed"
     return 0
-}
-
-function read_conffile() {
-    local -r conffile="$1"
-
-    if [[ ! -f "${conffile}" ]]; then
-        __log_error "Configuration file not found: ${conffile}"
-        __summary_error 1
-    fi
-
-    # shellcheck source=/dev/null
-    source "${conffile}"
-    cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
-    create_log_file               # the log file location is in the conffile
-    __log_success "Found configuration file: ${conffile}\n"
 }
 
 function run_scripts() {
