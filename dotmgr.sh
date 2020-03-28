@@ -165,16 +165,6 @@ function symlink_file() {
     __log_success "${filename}: ${origin_file} -> ${destination_file}"
 }
 
-function check_package() {
-    local -r package="$1"
-    if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null \
-            | grep -q "install ok installed"; then
-        return 1
-    fi
-
-    return 0
-}
-
 function install_packages() {
     local -r packages=("$@")
     local packages_not_installed=()
@@ -210,6 +200,16 @@ function install_packages() {
     fi
 
     __log_success "Packages successfully installed"
+    return 0
+}
+
+function check_package() {
+    local -r package="$1"
+    if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null \
+            | grep -q "install ok installed"; then
+        return 1
+    fi
+
     return 0
 }
 
