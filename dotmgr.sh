@@ -90,7 +90,7 @@ function create_log_file() {
         __log_error "${log_file}: Cannot create log file directory"
         __summary_error 1
     fi
-    
+
     : > "${log_file}"
 }
 
@@ -241,15 +241,21 @@ function run_script() {
 
     pushd "$PWD" > /dev/null
 
+
+    # Disable exit on error when sourcing the script. The caller decides whether to exit or not.
+    set +e
+
     __log_info "Running script: ${script}"
     # shellcheck source=/dev/null
     if source "${script_path}"; then
         __log_success "Script executed: ${script}\n"
         popd > /dev/null  # Make sure we are always at the original dir after script execution
+        set -e
         return 0
     else
         __log_error "Script executed with errors: ${script}\n"
         popd > /dev/null  # Make sure we are always at the original dir after script execution
+        set -e
         return 1
     fi
 }
