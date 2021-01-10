@@ -8,6 +8,4 @@ Can, for example, be used as a git submodule in a dotfiles repository.
 
 #### Examples
 
-https://github.com/esalipe/dotfiles
-
-https://github.com/esalipe/dotfiles-test
+https://github.com/psalin/dotfiles
