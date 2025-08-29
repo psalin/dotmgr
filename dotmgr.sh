@@ -39,15 +39,15 @@ __log_error() {
 }
 
 __log_success() {
-    printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+    printf "%b" "${_ctb_success}[OK] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
 }
 
 __log_warning() {
-    printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+    printf "%b" "${_ctb_warning}[WARN] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
 }
 
 __log_info() {
-    printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}"
+    printf "%b" "${_ctb}[INFO] ${_ct}$1${_c_reset}\n" | tee -a "${log_file}" >&2
 }
 
 __summary_success() {
