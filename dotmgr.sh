@@ -123,14 +123,14 @@ function symlink_files_in_dirtree() {
     local -r destination_dir="$2"
 
     while IFS= read -r -d '' file; do
-        symlink_file "${file}" "${destination_dir}${file#${origin_dir}}"
+        symlink_file "${file}" "${destination_dir}${file#"${origin_dir}"}"
     done < <(find "${origin_dir}" -type f -print0)
 }
 
 function symlink_file() {
     local -r origin_file="$1"
     local -r destination_file="$2"
-    local dir="${destination_file%${destination_file##*/}}"
+    local dir="${destination_file%"${destination_file##*/}"}"
     local date_of_backup
     local filename
     date_of_backup="$(date +%Y%m%d)"
