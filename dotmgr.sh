@@ -80,6 +80,10 @@ function read_conffile() {
 
     # shellcheck source=/dev/null
     source "${conffile}"
+
+    # Normalize log_file so that working directory doesn't affect logging
+    log_file=$(realpath -e "${log_file}" 2> /dev/null)
+
     cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
     create_log_file               # the log file location is in the conffile
     __log_success "Found configuration file: ${conffile}\n"
