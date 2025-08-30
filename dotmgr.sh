@@ -229,6 +229,8 @@ function run_scripts() {
 
 function run_script() {
     local -r script="$1"
+    shift
+    local script_params=("$@")
     local script_path
 
     if ! script_path="$(realpath -e "${script_dir}/${script}" 2> /dev/null)"; then
@@ -249,7 +251,8 @@ function run_script() {
     # Disable exit on error when sourcing the script. The caller decides whether to exit or not.
     set +e
 
-    __log_info "Running script: ${script}"
+    __log_info "Running script: ${script} ${script_params[*]}"
+    set -- "${script_params[@]}"
     # shellcheck source=/dev/null
     if source "${script_path}"; then
         __log_success "Script executed: ${script}\n"
@@ -349,8 +352,14 @@ function parse_arguments() {
                 shift 2
                 ;;
             --script | -s)
-                parameter_scripts+=("$2")
+                current_script=("$2")
                 shift 2
+                while [[ $# -gt 0 && "$1" != -* ]]; do
+                    current_script+=("$1")
+                    shift
+                done
+                # Store "scriptname arg1 arg2 ..." as a single string
+                parameter_scripts+=("${current_script[*]}")
                 ;;
             --help | -h)
                 parameter_help=true
