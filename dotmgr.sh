@@ -24,6 +24,7 @@ parameter_dotfiles=false
 parameter_dry_run=false
 parameter_packages=()
 parameter_scripts=()
+parameter_script_args=()
 
 # Log output handling originally from installation script of Nord theme
 # https://github.com/arcticicestudio/
@@ -219,9 +220,18 @@ function check_package() {
 
 function run_scripts() {
     local -r scripts=("$@")
+    local idx=0
 
     for script in "${scripts[@]}"; do
-        if ! run_script "${script}"; then
+        # Get the arguments for this script from the parallel array
+        local -a script_args=()
+        if [[ -n "${parameter_script_args[idx]:-}" ]]; then
+            # Split the stored args back into an array
+            read -ra script_args <<< "${parameter_script_args[idx]}"
+        fi
+        ((idx++)) || true
+
+        if ! run_script "${script}" "${script_args[@]}"; then
             __summary_error 1
         fi
     done
@@ -352,14 +362,17 @@ function parse_arguments() {
                 shift 2
                 ;;
             --script | -s)
-                current_script=("$2")
+                current_script="$2"
                 shift 2
+                # Collect remaining arguments for this script
+                script_args_list=()
                 while [[ $# -gt 0 && "$1" != -* ]]; do
-                    current_script+=("$1")
+                    script_args_list+=("$1")
                     shift
                 done
-                # Store "scriptname arg1 arg2 ..." as a single string
-                parameter_scripts+=("${current_script[*]}")
+                # Store script name and args separately
+                parameter_scripts+=("${current_script}")
+                parameter_script_args+=("${script_args_list[*]}")
                 ;;
             --help | -h)
                 parameter_help=true
@@ -378,6 +391,7 @@ function parse_arguments() {
     readonly parameter_dry_run
     readonly parameter_packages
     readonly parameter_scripts
+    readonly parameter_script_args
 }
 
 function main() {
