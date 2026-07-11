@@ -82,15 +82,22 @@ function read_conffile() {
     # shellcheck source=/dev/null
     source "${conffile}"
 
-    # Normalize log_file so that working directory doesn't affect logging
-    log_file=$(realpath -e "${log_file}" 2> /dev/null)
+    cd "$(dirname "${conffile}")" # working dir = dir of the conffile
 
-    cd "$(dirname "${conffile}")" # set the working dir to the dir of the conffile
-    create_log_file               # the log file location is in the conffile
+    # Normalize log_file (relative to conffile dir now). Use -m because the
+    # file need not exist yet; create_log_file will create it.
+    log_file="$(realpath -m "${log_file}")"
+
+    create_log_file
     __log_success "Found configuration file: ${conffile}\n"
 }
 
 function create_log_file() {
+    if [[ -z "${log_file}" ]]; then
+        __log_error "log_file is not set"
+        __summary_error 1
+    fi
+
     if ! mkdir -p "${log_file%/*}"; then
         __log_error "${log_file}: Cannot create log file directory"
         __summary_error 1
@@ -278,6 +285,15 @@ function run_script() {
 }
 
 function install_main() {
+    # Show help if requested or no action options given
+    if [[ "${parameter_help}" == true \
+              || ("${parameter_dotfiles}" == false \
+                      && ${#parameter_packages[@]} -eq 0 \
+                      && ${#parameter_scripts[@]} -eq 0) ]]; then
+        show_help
+        exit 0
+    fi
+
     if [[ -n "${parameter_conffile}" ]]; then
         read_conffile "${parameter_conffile}"
     fi
@@ -290,13 +306,6 @@ function install_main() {
     readonly log_file
     readonly script_help_cmd
 
-    if [[ "${parameter_help}" == true \
-              || ("${parameter_dotfiles}" == false \
-                      && ${#parameter_packages[@]} -eq 0 \
-                      && ${#parameter_scripts[@]} -eq 0) ]]; then
-        show_help
-        exit 0
-    fi
     if [[ "${parameter_dotfiles}" == true ]]; then
         __log_info "Installing dotfiles as symlinks"
         install_dotfiles "${dotfiles_list[@]}"
