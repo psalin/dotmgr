@@ -26,6 +26,9 @@ parameter_packages=()
 parameter_scripts=()
 parameter_script_args=()
 
+# Distro in use, set on first detection, cached for the rest of the execution
+dotmgr_distro_family=""
+
 # Log output handling originally from installation script of Nord theme
 # https://github.com/arcticicestudio/
 readonly _ct="\e[0;37m"
@@ -177,9 +180,66 @@ function symlink_file() {
     __log_success "${filename}: ${origin_file} -> ${destination_file}"
 }
 
+# Detects the distro if not yet detected, currently supports debian, fedora or arch
+function detect_distro_family() {
+    if [[ -n "${dotmgr_distro_family}" ]]; then
+        return 0
+    fi
+
+    local -r os_release="${DOTMGR_OS_RELEASE:-/etc/os-release}"
+    local id="" id_like=""
+    local key value
+
+    if [[ ! -r "${os_release}" ]]; then
+        __log_error "Cannot read os-release file: ${os_release}"
+        return 1
+    fi
+
+    while IFS='=' read -r key value; do
+        # Strip surrounding double quotes, if any.
+        value="${value%\"}"
+        value="${value#\"}"
+        case "${key}" in
+            ID) id="${value}" ;;
+            ID_LIKE) id_like="${value}" ;;
+        esac
+    done < "${os_release}"
+
+    # ID first, then each ID_LIKE token; first supported family wins.
+    local token
+    for token in "${id}" ${id_like}; do
+        case "${token}" in
+            debian | fedora | arch)
+                dotmgr_distro_family="${token}"
+                __log_info "Detected distro family: ${dotmgr_distro_family}"
+                return 0
+                ;;
+        esac
+    done
+
+    __log_error "Unsupported distribution: ID='${id:-unknown}' does not map to a supported family (debian, fedora, arch)"
+    return 1
+}
+
+# Prints the distro family, for usage in dotfile scripts
+function distro_family() {
+    detect_distro_family || return
+
+    printf '%s' "${dotmgr_distro_family}"
+}
+
 function install_packages() {
     local -r packages=("$@")
     local packages_not_installed=()
+
+    if ! detect_distro_family; then
+        return 1
+    fi
+
+    if [[ ${#packages[@]} -eq 0 ]]; then
+        __log_success "All packages are already installed"
+        return 0
+    fi
 
     for package in "${packages[@]}"; do
         if ! check_package "${package}"; then
