@@ -74,6 +74,56 @@ function run_cmd() {
     fi
 }
 
+# The effective UID used for privilege decisions.
+# Overridable by DOTMGR_FORCE_EUID for test purposes.
+function __current_euid() {
+    printf '%s' "${DOTMGR_FORCE_EUID:-${EUID}}"
+}
+
+# Returns 0 if sudo passes, 1 otherwise
+function __sudo_available() {
+    # Overridable for testing purposes
+    if [[ -n "${DOTMGR_FORCE_SUDO:-}" ]]; then
+        if [[ "${DOTMGR_FORCE_SUDO}" == "1" ]]; then
+            return 0
+        fi
+        return 1
+    fi
+
+    command -v sudo > /dev/null 2>&1 || return 1
+
+    if sudo -n true > /dev/null 2>&1; then
+        return 0
+    fi
+
+    # Only try sudo if we have a controlling terminal where we can enter the
+    # password. The above sudo -n already takes care of the ones where we don't
+    # need to enter one.
+    if { : < /dev/tty; } 2>/dev/null; then
+        sudo -v > /dev/null 2>&1
+        return
+    fi
+
+    return 1
+}
+
+# Runs a command directly as root, otherwise using sudo.
+function run_privileged() {
+    if [[ "$(__current_euid)" -eq 0 ]]; then
+        run_cmd "$@"
+    elif __sudo_available; then
+        run_cmd sudo "$@"
+    else
+        __log_warning "Couldn't run privileged, no sudo rights"
+        return 1
+    fi
+}
+
+# Checks whether privileged operations can proceed
+function __have_privileges() {
+    [[ "$(__current_euid)" -eq 0 ]] || __sudo_available
+}
+
 function read_conffile() {
     local -r conffile="$1"
 
@@ -250,19 +300,19 @@ function install_packages() {
         fi
     done
 
-    if [[ ${#packages_not_installed[@]} -ne 0 ]]; then
-        if ! run_cmd sudo -v; then
-            __log_warning "Could not install packages, no sudo rights"
-            return 1
-        fi
-    else
+    if [[ ${#packages_not_installed[@]} -eq 0 ]]; then
         __log_success "All packages are already installed"
         return 0
     fi
 
+    if ! __have_privileges; then
+        __log_warning "Could not install packages, no sudo rights"
+        return 1
+    fi
+
     __log_info "Installing packages: ${packages_not_installed[*]}"
-    run_cmd sudo apt-get update
-    if ! run_cmd sudo apt-get install -y "${packages_not_installed[@]}"; then
+    run_privileged apt-get update || true
+    if ! run_privileged apt-get install -y "${packages_not_installed[@]}"; then
         for package in "${packages[@]}"; do
             if ! check_package "${package}"; then
                 __log_error "${package}: not installed"
