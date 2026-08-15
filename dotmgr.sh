@@ -311,8 +311,7 @@ function install_packages() {
     fi
 
     __log_info "Installing packages: ${packages_not_installed[*]}"
-    run_privileged apt-get update || true
-    if ! run_privileged apt-get install -y "${packages_not_installed[@]}"; then
+    if ! pm_install "${packages_not_installed[@]}"; then
         for package in "${packages[@]}"; do
             if ! check_package "${package}"; then
                 __log_error "${package}: not installed"
@@ -325,14 +324,68 @@ function install_packages() {
     return 0
 }
 
+# Failing the update doesn't fail the install, we use the cached index in that
+# case. Use DEBIAN_FRONTEND and -y to prevent prompts.
+function pm_install_debian() {
+    run_privileged apt-get update || true
+    run_privileged env DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
+}
+
+function pm_install_fedora() {
+    run_privileged dnf install -y "$@"
+}
+
+# For arch we don't refresh the database because we would need to upgrade
+# everything. It is up to the user to decide when to refresh to database.
+function pm_install_arch() {
+    run_privileged pacman -S --needed --noconfirm "$@"
+}
+
+# Installs known-missing packages through the detected family's backend.
+function pm_install() {
+    case "${dotmgr_distro_family}" in
+        debian) pm_install_debian "$@" ;;
+        fedora) pm_install_fedora "$@" ;;
+        arch) pm_install_arch "$@" ;;
+        *)
+            __log_error "Unsupported distro family for package install: '${dotmgr_distro_family}'"
+            return 1
+            ;;
+    esac
+}
+
+function pm_check_debian() {
+    local -r package="$1"
+    dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null \
+        | grep -q "install ok installed"
+}
+
+function pm_check_fedora() {
+    local -r package="$1"
+    rpm -q "${package}" > /dev/null 2>&1
+}
+
+function pm_check_arch() {
+    local -r package="$1"
+    pacman -Q "${package}" > /dev/null 2>&1
+}
+
 function check_package() {
     local -r package="$1"
-    if ! dpkg-query -W --showformat='${Status}\n' "${package}" 2>/dev/null \
-            | grep -q "install ok installed"; then
+
+    if [[ -z "${dotmgr_distro_family}" ]] && ! detect_distro_family; then
         return 1
     fi
 
-    return 0
+    case "${dotmgr_distro_family}" in
+        debian) pm_check_debian "${package}" ;;
+        fedora) pm_check_fedora "${package}" ;;
+        arch) pm_check_arch "${package}" ;;
+        *)
+            __log_error "Unsupported distro family for package check: '${dotmgr_distro_family}'"
+            return 1
+            ;;
+    esac
 }
 
 function run_scripts() {
